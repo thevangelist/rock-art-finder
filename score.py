@@ -571,7 +571,7 @@ def build_map(scored, known_sites):
                 f"Proximity: {r['prox_score']:.2f} · Approach: {r.get('approach_score',0):.2f}<br>"
                 f"Portage corridor: {r.get('portage_score',0):.2f}<br><br>"
                 f"<a href='https://www.google.com/maps?q={r['lat']:.5f},{r['lon']:.5f}' target='_blank'>📍 Google Maps</a><br>"
-                f"<a href='https://www.retkikartta.fi/?lat={r['lat']:.5f}&lng={r['lon']:.5f}&zoom=15' target='_blank'>🥾 Retkikartta</a>",
+                f"<a href='https://www.retkikartta.fi/#15/{r['lat']:.5f}/{r['lon']:.5f}' target='_blank'>🥾 Retkikartta</a>",
                 max_width=240,
             ),
         ).add_to(candidate_group)
@@ -674,7 +674,7 @@ def build_map(scored, known_sites):
         var label = pct >= 70 ? '🟢 High' : pct >= 45 ? '🟡 Medium' : '🔴 Low';
         var elev = c.elevation ? c.elevation.toFixed(0) + 'm' : '';
         var gmaps = 'https://maps.google.com/?q=' + c.lat.toFixed(5) + ',' + c.lon.toFixed(5);
-        var retki = 'https://www.retkikartta.fi/?lat=' + c.lat.toFixed(5) + '&lng=' + c.lon.toFixed(5) + '&zoom=15';
+        var retki = 'https://www.retkikartta.fi/#15/' + c.lat.toFixed(5) + '/' + c.lon.toFixed(5);
         var above = c.above_lake != null ? c.above_lake.toFixed(0) + 'm above lake' : '';
         var portage = c.portage > 0.4 ? ' · portage' : '';
         html += '<div class="crow" onclick="focusCandidate(' + c.lat + ',' + c.lon + ')">';
@@ -703,7 +703,7 @@ def build_map(scored, known_sites):
           fillOpacity: 0.1, weight: 1
         }).addTo(_map);
         _userMarker = L.circleMarker(e.latlng, {
-          radius: 8, color: 'white', weight: 3,
+          radius: 12, color: 'white', weight: 4,
           fillColor: '#2196F3', fillOpacity: 1
         }).addTo(_map);
         _map.setView(e.latlng, 14);
@@ -746,8 +746,7 @@ def build_map(scored, known_sites):
       }
     });
 
-    // Auto-start GPS on page load
-    toggleTracking();
+    // GPS starts only on button tap — required by iOS Safari
     </script>
 
     <div style="position:fixed;bottom:30px;right:10px;z-index:1000">
