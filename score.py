@@ -654,6 +654,7 @@ def build_map(scored, known_sites):
     var _accuracyCircle = null;
     var _watchId = null;
     var _tracking = false;
+    var _following = false;
     var _lastLat = null, _lastLon = null;
 
     function focusCandidate(lat, lon) {
@@ -707,8 +708,9 @@ def build_map(scored, known_sites):
           zIndexOffset: 1000
         }).addTo(_map);
         _accuracyCircle = L.circle([lat, lon], {radius: acc, color:'#2196F3', fillOpacity:0.08, weight:1}).addTo(_map);
-        _map.setView([lat, lon], 13);
+        _map.setView([lat, lon], 14);
       }
+      if (_following) _map.panTo([lat, lon]);
 
       // Update panel if open
       if (document.getElementById('panel').classList.contains('open')) {
@@ -731,18 +733,31 @@ def build_map(scored, known_sites):
 
     function toggleTracking() {
       if (!navigator.geolocation) { alert('GPS not available in this browser'); return; }
-      if (_tracking) {
-        stopTracking();
-        document.getElementById('panel').classList.remove('open');
-      } else {
+      if (!_tracking) {
+        // First press: start tracking + follow
         _tracking = true;
-        var btn = document.getElementById('gps-btn');
-        if (btn) btn.style.background = '#4CAF50';
+        _following = true;
+        document.getElementById('gps-btn').style.background = '#4CAF50';
         _watchId = navigator.geolocation.watchPosition(updatePosition, gpsError, {
-          enableHighAccuracy: true, maximumAge: 5000, timeout: 15000
+          enableHighAccuracy: true, maximumAge: 3000, timeout: 15000
         });
+      } else if (_following) {
+        // Second press: keep tracking but stop following (user dragged away)
+        _following = false;
+        document.getElementById('gps-btn').style.background = '#FF9800';
+      } else {
+        // Third press: stop everything
+        stopTracking();
       }
     }
+
+    // Stop following when user manually drags the map
+    _map.on('dragstart', function() {
+      if (_tracking && _following) {
+        _following = false;
+        document.getElementById('gps-btn').style.background = '#FF9800';
+      }
+    });
     </script>
 
     <div style="position:fixed;bottom:30px;right:10px;z-index:1000">
