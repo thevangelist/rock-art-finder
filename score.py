@@ -98,17 +98,10 @@ MANUAL_KNOWN_SITES = [
         "elev_above_water": 15,
     },
     {
-        "name": "Uittovuori (Konnevesi)",
-        "lon": 26.5492, "lat": 62.5701,
+        "name": "Uittovuori / Paanalansaari (Hankavesi)",
+        "lon": 26.2505, "lat": 62.3813,
         "access": "boat",
-        "note": "On the water travel corridor between Keitele and Konnevesi — route site.",
-        "elev_above_water": 3,
-    },
-    {
-        "name": "Paanalansaari (Hankavesi area)",
-        "lon": 26.2411, "lat": 62.3786,
-        "access": "boat",
-        "note": "Rock painting on Paanalansaari island. Approx coords from map search.",
+        "note": "Rock painting on Paanalansaari island, Hankavesi. Accessible by water.",
         "elev_above_water": 3,
     },
     {
