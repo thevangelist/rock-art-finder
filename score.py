@@ -830,7 +830,7 @@ def main():
             sat_var = re.search(r'var (tile_layer_\w+) = L\.tileLayer\(\s*"https://server\.arcgisonline', raw)
         if sat_var:
             var_name = sat_var.group(1)
-            raw = raw.replace(f"{var_name}.addTo(", f"// {var_name}.addTo(", 1)
+            raw = raw.replace(f"{var_name}.addTo(", f"// {var_name}.addTo(")
         f.write(raw)
     print("Map saved to map.html — open it in your browser!")
 
