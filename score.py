@@ -101,8 +101,8 @@ MANUAL_KNOWN_SITES = [
         "name": "Uittovuori / Paanalansaari (Hankavesi)",
         "lon": 26.2505, "lat": 62.3813,
         "access": "boat",
-        "note": "Rock painting on Paanalansaari island, Hankavesi. Accessible by water.",
-        "elev_above_water": 3,
+        "note": "NW end of Paanalansaari island between Kynsivesi and Leivonvesi, ~900m NE of Kaivanto canal. Painting on the west face of Uittovuori cliff, on a terrace 10–11m above water. Figures in a 36×60cm area within deep vertical cracks: three vertical lines above a circle, and to the right an unusual horned human figure (25cm tall) with curved legs touching heel-to-heel and arms bent like fists on hips. Rare style. Discovered 1999.",
+        "elev_above_water": 10,
     },
     {
         "name": "Halsvuori (Laukaa)",
