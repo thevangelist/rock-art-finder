@@ -693,6 +693,8 @@ def build_map(scored, known_sites):
     // Use Leaflet's built-in locate which handles permissions and rendering reliably
     _map.on('locationfound', function(e) {
       _lastLat = e.latlng.lat; _lastLon = e.latlng.lng;
+      document.getElementById('gps-btn').title = e.latlng.lat.toFixed(4) + ',' + e.latlng.lng.toFixed(4);
+      document.getElementById('gps-btn').innerHTML = '🔵';
 
       if (_userMarker) {
         _userMarker.setLatLng(e.latlng);
@@ -716,7 +718,9 @@ def build_map(scored, known_sites):
     });
 
     _map.on('locationerror', function(e) {
-      alert('Location error: ' + e.message);
+      document.getElementById('gps-btn').innerHTML = '❌';
+      document.getElementById('gps-btn').style.background = '#f44336';
+      alert('GPS error: ' + e.message);
       stopTracking();
     });
 
