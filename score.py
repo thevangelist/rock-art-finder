@@ -528,11 +528,33 @@ def build_map(scored, known_sites):
             name="Ancient shoreline band (3–12m)", show=False).add_to(m)
 
     # Top candidates as markers
+    def candidate_summary(r):
+        parts = []
+        if r["elev_score"] >= 0.8:
+            above = r.get("above_lake")
+            parts.append(f"Elevation {above:.0f}m above lake — near ancient shoreline sweet spot." if above else "Elevation in prime ancient shoreline band.")
+        elif r["elev_score"] >= 0.5:
+            parts.append("Elevation within plausible ancient shoreline range.")
+        if r.get("portage_score", 0) >= 0.6:
+            parts.append("Between two lake systems — likely portage corridor.")
+        elif r.get("portage_score", 0) >= 0.3:
+            parts.append("Near a lake crossing point.")
+        if r["prox_score"] >= 0.9:
+            parts.append("Very close to a confirmed site.")
+        elif r["prox_score"] >= 0.7:
+            parts.append("Within known site cluster.")
+        if r.get("cliff_score", 0) >= 0.6:
+            parts.append("South/SW-facing slope detected.")
+        if r.get("approach_score", 0) >= 0.8:
+            parts.append("Flat terrain nearby — good approach.")
+        return " ".join(parts) if parts else "Moderate match across multiple criteria."
+
     top = sorted(scored, key=lambda x: x["score"], reverse=True)[:30]
     candidate_group = folium.FeatureGroup(name="Top 30 candidates")
     for r in top:
         elev_str = f"{r['elevation']:.0f}m" if r['elevation'] else "?"
         marker_radius = 4 + int(r["score"] * 10)   # 4–14px based on score
+        summary = candidate_summary(r)
         folium.CircleMarker(
             location=[r["lat"], r["lon"]],
             radius=marker_radius,
@@ -542,14 +564,15 @@ def build_map(scored, known_sites):
             popup=folium.Popup(
                 f"<b>Candidate #{top.index(r)+1}</b><br>"
                 f"<b style='font-size:15px'>{round(r['score']*100)}% likelihood</b><br>"
-                f"{'🟢 High' if r['score']>=0.7 else '🟡 Medium' if r['score']>=0.45 else '🔴 Low'}<br><br>"
+                f"{'🟢 High' if r['score']>=0.7 else '🟡 Medium' if r['score']>=0.45 else '🔴 Low'}<br>"
+                f"<i style='font-size:11px;color:#444'>{summary}</i><br><br>"
                 f"Elevation: {elev_str}<br>"
                 f"Elev score: {r['elev_score']:.2f} · Cliff: {r.get('cliff_score',0):.2f}<br>"
                 f"Proximity: {r['prox_score']:.2f} · Approach: {r.get('approach_score',0):.2f}<br>"
                 f"Portage corridor: {r.get('portage_score',0):.2f}<br><br>"
                 f"<a href='https://www.google.com/maps?q={r['lat']:.5f},{r['lon']:.5f}' target='_blank'>📍 Google Maps</a><br>"
                 f"<a href='https://www.retkikartta.fi/?lat={r['lat']:.5f}&lng={r['lon']:.5f}&zoom=15' target='_blank'>🥾 Retkikartta</a>",
-                max_width=220,
+                max_width=240,
             ),
         ).add_to(candidate_group)
     candidate_group.add_to(m)
