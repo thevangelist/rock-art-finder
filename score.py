@@ -411,17 +411,13 @@ def score_grid(grid, known_sites, elevations, slopes=None, aspects=None):
         c_score = np.full(len(grid), 0.5)
 
     # ── Water mask — zero out points at or below lake surface ─────────────────
-    # Points ≤2m above nearest lake = open water or flat shoreline, not cliff art
-    water_mask = above <= 2.0  # 'above' computed earlier as elevs - lake_surface
+    water_mask = above <= 2.0
     e_score = np.where(water_mask, 0.0, e_score)
-    c_score = np.where(water_mask, 0.0, c_score)
 
     # ── Combine ───────────────────────────────────────────────────────────────
-    # Cliff score is multiplicative gate: near-zero cliff = near-zero total
-    # This prevents flat lake shores from scoring high on elevation+proximity alone
-    cliff_gate = np.clip(c_score * 2.0, 0.0, 1.0)  # amplify so low cliff kills score
+    # Cliff score is additive (SRTM 30m resolution too coarse to gate on)
     total = np.clip(
-        cliff_gate * (0.40*e_score + 0.35*p_score + 0.15*a_score + 0.10*(1 + w_score)),
+        0.40*e_score + 0.20*c_score + 0.25*p_score + 0.10*a_score + 0.05*(1 + w_score),
         0, 1
     )
 
@@ -463,7 +459,7 @@ def build_map(scored, known_sites):
     print(f"  Heatmap points: {len(heat_data)}")
     HeatMap(heat_data, radius=15, blur=25, min_opacity=0.05, max_opacity=0.45,
             gradient={0.0: "blue", 0.5: "lime", 0.75: "yellow", 1.0: "red"},
-            name="Likelihood heatmap").add_to(m)
+            name="Likelihood heatmap", show=False).add_to(m)
 
     # Top candidates as markers
     top = sorted(scored, key=lambda x: x["score"], reverse=True)[:30]
@@ -478,13 +474,11 @@ def build_map(scored, known_sites):
             fill_opacity=0.7,
             popup=folium.Popup(
                 f"<b>Candidate #{top.index(r)+1}</b><br>"
-                f"Score: {r['score']:.2f}<br>"
+                f"<b style='font-size:15px'>{round(r['score']*100)}% likelihood</b><br>"
+                f"{'🟢 High' if r['score']>=0.7 else '🟡 Medium' if r['score']>=0.45 else '🔴 Low'}<br><br>"
                 f"Elevation: {elev_str}<br>"
-                f"Elev score: {r['elev_score']:.2f}<br>"
-                f"Cliff (steep+facing): {r.get('cliff_score',0):.2f}<br>"
-                f"Prox score: {r['prox_score']:.2f}<br>"
-                f"Approach: {r.get('approach_score', 0):.2f}<br>"
-                f"Route bonus: {r.get('route_bonus', 0):.2f}<br><br>"
+                f"Elev score: {r['elev_score']:.2f} · Cliff: {r.get('cliff_score',0):.2f}<br>"
+                f"Proximity: {r['prox_score']:.2f} · Approach: {r.get('approach_score',0):.2f}<br><br>"
                 f"<a href='https://www.google.com/maps?q={r['lat']:.5f},{r['lon']:.5f}' "
                 f"target='_blank'>📍 Open in Google Maps</a>",
                 max_width=220,
@@ -513,47 +507,131 @@ def build_map(scored, known_sites):
 
     folium.LayerControl().add_to(m)
 
-    # GPS locate button + nearest candidate finder
+    map_name = m.get_name()
+    candidates_json = json.dumps([
+        {"lat": r["lat"], "lon": r["lon"], "score": r["score"],
+         "elevation": r.get("elevation")}
+        for r in sorted(scored, key=lambda x: x["score"], reverse=True)[:200]
+    ])
+
     gps_js = """
+    <style>
+    #nearest-modal {
+      display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+      background:rgba(0,0,0,0.5); z-index:9999; align-items:center; justify-content:center;
+    }
+    #nearest-modal.open { display:flex; }
+    #nearest-box {
+      background:white; border-radius:12px; width:90%; max-width:380px;
+      max-height:80vh; overflow-y:auto; font-family:sans-serif;
+      box-shadow:0 8px 32px rgba(0,0,0,0.4);
+    }
+    #nearest-box h3 {
+      margin:0; padding:16px; border-bottom:1px solid #eee; font-size:16px;
+    }
+    #nearest-box .close-btn {
+      float:right; cursor:pointer; font-size:20px; color:#888; line-height:1;
+    }
+    .candidate-row {
+      padding:12px 16px; border-bottom:1px solid #f0f0f0; cursor:pointer;
+      display:flex; align-items:center; gap:12px;
+    }
+    .candidate-row:hover { background:#f5f5f5; }
+    .candidate-row:active { background:#e3f2fd; }
+    .candidate-rank {
+      background:#FF9800; color:white; border-radius:50%;
+      width:28px; height:28px; display:flex; align-items:center;
+      justify-content:center; font-weight:bold; font-size:13px; flex-shrink:0;
+    }
+    .candidate-info { flex:1; }
+    .candidate-dist { font-size:15px; font-weight:600; color:#333; }
+    .candidate-meta { font-size:12px; color:#888; margin-top:2px; }
+    .candidate-gmaps {
+      font-size:12px; color:#2196F3; text-decoration:none; margin-top:4px; display:block;
+    }
+    </style>
+
+    <div id="nearest-modal">
+      <div id="nearest-box">
+        <h3>Nearest candidates <span class="close-btn" onclick="closeModal()">✕</span></h3>
+        <div id="nearest-list"></div>
+      </div>
+    </div>
+
     <script>
+    var CANDIDATES = """ + candidates_json + """;
+    var _map = map_""" + map_name + """;
+    var _userMarker = null;
+
+    function closeModal() {
+      document.getElementById('nearest-modal').classList.remove('open');
+    }
+
+    function focusCandidate(lat, lon) {
+      closeModal();
+      _map.setView([lat, lon], 15);
+      // find and open the matching marker popup
+      _map.eachLayer(function(layer) {
+        if (layer instanceof L.CircleMarker) {
+          var ll = layer.getLatLng();
+          if (Math.abs(ll.lat - lat) < 0.0001 && Math.abs(ll.lng - lon) < 0.0001) {
+            layer.openPopup();
+          }
+        }
+      });
+    }
+
     function findNearest() {
-        if (!navigator.geolocation) { alert('Geolocation not supported'); return; }
-        navigator.geolocation.getCurrentPosition(function(pos) {
-            var lat = pos.coords.latitude;
-            var lon = pos.coords.longitude;
-            var candidates = """ + json.dumps([
-                {"lat": r["lat"], "lon": r["lon"], "score": r["score"],
-                 "elevation": r.get("elevation"), "rank": i+1}
-                for i, r in enumerate(sorted(scored if 'scored' in dir() else [],
-                    key=lambda x: x["score"], reverse=True)[:200])
-            ]) + """;
-            // find 5 nearest
-            var dists = candidates.map(function(c) {
-                var dlat = c.lat - lat, dlon = c.lon - lon;
-                return Object.assign({}, c, {dist: Math.sqrt(dlat*dlat + dlon*dlon) * 111});
-            });
-            dists.sort(function(a,b){ return a.dist - b.dist; });
-            var nearest = dists.slice(0,5);
-            var msg = 'Nearest candidates:\\n\\n';
-            nearest.forEach(function(c, i) {
-                msg += (i+1) + '. ' + c.dist.toFixed(1) + ' km — score ' + c.score.toFixed(2);
-                if(c.elevation) msg += ' (' + c.elevation.toFixed(0) + 'm)';
-                msg += '\\nhttps://maps.google.com/?q=' + c.lat.toFixed(5) + ',' + c.lon.toFixed(5);
-                msg += '\\n\\n';
-            });
-            alert(msg);
-            // also show your location on map
-            L.marker([lat, lon], {
-                icon: L.divIcon({html:'<div style="background:blue;width:14px;height:14px;border-radius:50%;border:2px solid white"></div>', iconSize:[14,14]})
-            }).addTo(map_""" + m.get_name() + """).bindPopup('Your location').openPopup();
-            map_""" + m.get_name() + """.setView([lat, lon], 13);
-        }, function(e){ alert('Sijaintia ei saatu: ' + e.message); });
+      if (!navigator.geolocation) { alert('Geolocation not supported'); return; }
+      navigator.geolocation.getCurrentPosition(function(pos) {
+        var lat = pos.coords.latitude;
+        var lon = pos.coords.longitude;
+
+        // Show user location
+        if (_userMarker) _map.removeLayer(_userMarker);
+        _userMarker = L.marker([lat, lon], {
+          icon: L.divIcon({
+            html: '<div style="background:#2196F3;width:14px;height:14px;border-radius:50%;border:3px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.4)"></div>',
+            iconSize:[14,14], iconAnchor:[7,7]
+          })
+        }).addTo(_map).bindPopup('Your location').openPopup();
+        _map.setView([lat, lon], 12);
+
+        // Compute distances
+        var dists = CANDIDATES.map(function(c) {
+          var dlat = c.lat - lat, dlon = c.lon - lon;
+          var km = Math.sqrt(dlat*dlat + dlon*dlon) * 111;
+          return Object.assign({}, c, {dist: km});
+        });
+        dists.sort(function(a,b){ return a.dist - b.dist; });
+        var nearest = dists.slice(0, 8);
+
+        // Build modal list
+        var html = '';
+        nearest.forEach(function(c, i) {
+          var elev = c.elevation ? c.elevation.toFixed(0) + 'm asl' : '';
+          var gmaps = 'https://maps.google.com/?q=' + c.lat.toFixed(5) + ',' + c.lon.toFixed(5);
+          html += '<div class="candidate-row" onclick="focusCandidate(' + c.lat + ',' + c.lon + ')">';
+          html += '<div class="candidate-rank">' + (i+1) + '</div>';
+          html += '<div class="candidate-info">';
+          var pct = Math.round(c.score * 100);
+          var label = pct >= 70 ? '🟢 High' : pct >= 45 ? '🟡 Medium' : '🔴 Low';
+          html += '<div class="candidate-dist">' + c.dist.toFixed(1) + ' km away</div>';
+          html += '<div class="candidate-meta">' + label + ' · ' + pct + '% · ' + (elev ? elev : '') + '</div>';
+          html += '<a class="candidate-gmaps" href="' + gmaps + '" target="_blank" onclick="event.stopPropagation()">Open in Google Maps ↗</a>';
+          html += '</div></div>';
+        });
+        document.getElementById('nearest-list').innerHTML = html;
+        document.getElementById('nearest-modal').classList.add('open');
+
+      }, function(e){ alert('Could not get location: ' + e.message); });
     }
     </script>
+
     <div style="position:fixed;bottom:30px;right:10px;z-index:1000">
       <button onclick="findNearest()" style="background:#2196F3;color:white;border:none;
-        padding:12px 18px;border-radius:25px;font-size:15px;cursor:pointer;
-        box-shadow:2px 2px 8px rgba(0,0,0,0.4)">
+        padding:14px 20px;border-radius:28px;font-size:15px;cursor:pointer;
+        box-shadow:2px 2px 10px rgba(0,0,0,0.4);font-weight:600">
         📍 Nearest candidates
       </button>
     </div>
@@ -570,6 +648,20 @@ def build_map(scored, known_sites):
       Elevation + cliff aspect + proximity</small>
     </div>
     """
+    pwa_head = """
+    <link rel="manifest" href="manifest.json">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Rock Art Finder">
+    <meta name="theme-color" content="#2196F3">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <style>
+      html, body { margin:0; padding:0; height:100%; overflow:hidden; }
+      .folium-map { position:fixed !important; top:0; left:0; width:100% !important; height:100% !important; }
+    </style>
+    """
+    m.get_root().header.add_child(folium.Element(pwa_head))
     m.get_root().html.add_child(folium.Element(title_html))
     m.get_root().html.add_child(folium.Element(gps_js))
 
@@ -594,7 +686,7 @@ def main():
     scored = score_grid(grid, known_sites, all_elevations, slopes.tolist(), aspects.tolist())
 
     # Save candidates
-    candidates = [r for r in scored if r["score"] > 0.5]
+    candidates = [r for r in scored if r["score"] > 0.2]
     candidates.sort(key=lambda x: x["score"], reverse=True)
     with open("candidates.json", "w") as f:
         json.dump(candidates[:200], f, indent=2)
