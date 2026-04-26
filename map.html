@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_323185ebdbaf21aac2a8281386714e93 {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+
+            <style>html, body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            </style>
+
+            <style>#map {
+                position:absolute;
+                top:0;
+                bottom:0;
+                right:0;
+                left:0;
+                }
+            </style>
+
+            <script>
+                L_NO_TOUCH = false;
+                L_DISABLE_3D = false;
+            </script>
+
+        
+    <script src="https://cdn.jsdelivr.net/gh/python-visualization/folium@main/folium/templates/leaflet_heat.min.js"></script>
+</head>
+<body>
+    
+    
+    <div style="position:fixed;top:10px;left:60px;z-index:1000;background:white;
+                padding:10px;border-radius:8px;font-family:sans-serif;font-size:13px;
+                box-shadow:2px 2px 6px rgba(0,0,0,0.3);max-width:260px">
+      <b>🪨 Rock Art Finder — Central Finland</b><br>
+      <span style="color:red">●</span> Known sites &nbsp;
+      <span style="color:orange">●</span> Candidates<br>
+      <small>Heatmap = likelihood score<br>
+      Based on elevation band (~80m) + proximity to known sites</small>
+    </div>
+    
+    
+            <div class="folium-map" id="map_323185ebdbaf21aac2a8281386714e93" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_323185ebdbaf21aac2a8281386714e93 = L.map(
+                "map_323185ebdbaf21aac2a8281386714e93",
+                {
+                    center: [62.099999999999994, 26.05],
+                    crs: L.CRS.EPSG3857,
+                    ...{
+  "zoom": 10,
+  "zoomControl": true,
+  "preferCanvas": false,
+}
+
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_4e6a0cfebffc82fc24adf3e8aa1cf94d = L.tileLayer(
+                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                {
+  "minZoom": 0,
+  "maxZoom": 19,
+  "maxNativeZoom": 19,
+  "noWrap": false,
+  "attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors",
+  "subdomains": "abc",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_4e6a0cfebffc82fc24adf3e8aa1cf94d.addTo(map_323185ebdbaf21aac2a8281386714e93);
+        
+    
+            var tile_layer_f3b107659e8d62314c6953a20032532a = L.tileLayer(
+                "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+                {
+  "minZoom": 0,
+  "maxZoom": 18,
+  "maxNativeZoom": 18,
+  "noWrap": false,
+  "attribution": "Esri",
+  "subdomains": "abc",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_f3b107659e8d62314c6953a20032532a.addTo(map_323185ebdbaf21aac2a8281386714e93);
+        
+    
+            var heat_map_6c0af2b041980b9834a90380b4dc70d2 = L.heatLayer(
+                [],
+                {
+  "minOpacity": 0.3,
+  "maxZoom": 18,
+  "radius": 18,
+  "blur": 20,
+  "gradient": {
+  0.4: "blue",
+  0.65: "lime",
+  0.8: "yellow",
+  1.0: "red",
+},
+}
+            );
+        
+    
+            heat_map_6c0af2b041980b9834a90380b4dc70d2.addTo(map_323185ebdbaf21aac2a8281386714e93);
+        
+    
+            var feature_group_b0987627b200f3447d3fb5f9725c38a8 = L.featureGroup(
+                {
+}
+            );
+        
+    
+            var circle_marker_feb40937fc0ebb049562211e3dbef034 = L.circleMarker(
+                [62.565999999999434, 26.55200000000042],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8, "stroke": true, "weight": 3}
+            ).addTo(feature_group_b0987627b200f3447d3fb5f9725c38a8);
+        
+    
+        var popup_31663e1316bd8b52a60e51412d1dd0ec = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_7448719e4f49b94d0b610c8ced07e65a = $(`<div id="html_7448719e4f49b94d0b610c8ced07e65a" style="width: 100.0%; height: 100.0%;"><b>Candidate</b><br>Score: 0.09<br>Elevation: 114m<br>Elev score: 0.38<br>Cliff (steep+facing): 0.13<br>Prox score: 0.20<br>Approach: 0.09<br>Route bonus: 0.15</div>`)[0];
+                popup_31663e1316bd8b52a60e51412d1dd0ec.setContent(html_7448719e4f49b94d0b610c8ced07e65a);
+            
+        
+
+        circle_marker_feb40937fc0ebb049562211e3dbef034.bindPopup(popup_31663e1316bd8b52a60e51412d1dd0ec)
+        ;
+
+        
+    
+    
+            var circle_marker_e80d6e217a3151fe7aa1069749ee9d1c = L.circleMarker(
+                [61.69399999999992, 25.66000000000012],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8, "stroke": true, "weight": 3}
+            ).addTo(feature_group_b0987627b200f3447d3fb5f9725c38a8);
+        
+    
+        var popup_353b6a2cbfc41d703b8abc4dad7940e5 = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_1e1b3fc027e41a02d945d8a93640d8db = $(`<div id="html_1e1b3fc027e41a02d945d8a93640d8db" style="width: 100.0%; height: 100.0%;"><b>Candidate</b><br>Score: 0.07<br>Elevation: 124m<br>Elev score: 0.00<br>Cliff (steep+facing): 0.09<br>Prox score: 0.77<br>Approach: 0.02<br>Route bonus: 0.00</div>`)[0];
+                popup_353b6a2cbfc41d703b8abc4dad7940e5.setContent(html_1e1b3fc027e41a02d945d8a93640d8db);
+            
+        
+
+        circle_marker_e80d6e217a3151fe7aa1069749ee9d1c.bindPopup(popup_353b6a2cbfc41d703b8abc4dad7940e5)
+        ;
+
+        
+    
+    
+            var circle_marker_0fe14f9d879e6b4826b7f4a871b4dd46 = L.circleMarker(
+                [61.70199999999991, 25.668000000000124],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8, "stroke": true, "weight": 3}
+            ).addTo(feature_group_b0987627b200f3447d3fb5f9725c38a8);
+        
+    
+        var popup_d08e8bbc02275006ea9a7c0e27549897 = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_e936dadf12fa5441b0f37e9fd27c9a6e = $(`<div id="html_e936dadf12fa5441b0f37e9fd27c9a6e" style="width: 100.0%; height: 100.0%;"><b>Candidate</b><br>Score: 0.07<br>Elevation: 146m<br>Elev score: 0.00<br>Cliff (steep+facing): 0.09<br>Prox score: 0.76<br>Approach: 0.01<br>Route bonus: 0.00</div>`)[0];
+                popup_d08e8bbc02275006ea9a7c0e27549897.setContent(html_e936dadf12fa5441b0f37e9fd27c9a6e);
+            
+        
+
+        circle_marker_0fe14f9d879e6b4826b7f4a871b4dd46.bindPopup(popup_d08e8bbc02275006ea9a7c0e27549897)
+        ;
+
+        
+    
+    
+            var circle_marker_09fc89c2ea7c75681825ebfddfbf9a3d = L.circleMarker(
+                [62.581999999999425, 26.728000000000478],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8, "stroke": true, "weight": 3}
+            ).addTo(feature_group_b0987627b200f3447d3fb5f9725c38a8);
+        
+    
+        var popup_48e7efff789c8ad2c9c53b35dc6a783a = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_960446145cb948c106cca8ef4e14e078 = $(`<div id="html_960446145cb948c106cca8ef4e14e078" style="width: 100.0%; height: 100.0%;"><b>Candidate</b><br>Score: 0.06<br>Elevation: 104m<br>Elev score: 0.97<br>Cliff (steep+facing): 0.04<br>Prox score: 0.89<br>Approach: 0.06<br>Route bonus: 0.00</div>`)[0];
+                popup_48e7efff789c8ad2c9c53b35dc6a783a.setContent(html_960446145cb948c106cca8ef4e14e078);
+            
+        
+
+        circle_marker_09fc89c2ea7c75681825ebfddfbf9a3d.bindPopup(popup_48e7efff789c8ad2c9c53b35dc6a783a)
+        ;
+
+        
+    
+    
+            var circle_marker_c80998bda6ab583a533a967e022cf5d4 = L.circleMarker(
+                [62.601999999999414, 25.944000000000216],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8, "stroke": true, "weight": 3}
+            ).addTo(feature_group_b0987627b200f3447d3fb5f9725c38a8);
+        
+    
+        var popup_67cb03f5124a2642f6f8df7028477160 = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_eb7cfe37a1fe1c442d9527b7f89eb2a7 = $(`<div id="html_eb7cfe37a1fe1c442d9527b7f89eb2a7" style="width: 100.0%; height: 100.0%;"><b>Candidate</b><br>Score: 0.05<br>Elevation: 172m<br>Elev score: 0.00<br>Cliff (steep+facing): 0.06<br>Prox score: 0.98<br>Approach: 0.03<br>Route bonus: 0.00</div>`)[0];
+                popup_67cb03f5124a2642f6f8df7028477160.setContent(html_eb7cfe37a1fe1c442d9527b7f89eb2a7);
+            
+        
+
+        circle_marker_c80998bda6ab583a533a967e022cf5d4.bindPopup(popup_67cb03f5124a2642f6f8df7028477160)
+        ;
+
+        
+    
+    
+            var circle_marker_d294a852d85e8738d51c9c10293872b2 = L.circleMarker(
+                [61.697999999999915, 25.696000000000133],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8, "stroke": true, "weight": 3}
+            ).addTo(feature_group_b0987627b200f3447d3fb5f9725c38a8);
+        
+    
+        var popup_68d93a378d5b9ae513650a343608176d = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_ac918de230f7f718a2f51c19638a446c = $(`<div id="html_ac918de230f7f718a2f51c19638a446c" style="width: 100.0%; height: 100.0%;"><b>Candidate</b><br>Score: 0.03<br>Elevation: 178m<br>Elev score: 0.00<br>Cliff (steep+facing): 0.04<br>Prox score: 0.73<br>Approach: 0.02<br>Route bonus: 0.00</div>`)[0];
+                popup_68d93a378d5b9ae513650a343608176d.setContent(html_ac918de230f7f718a2f51c19638a446c);
+            
+        
+
+        circle_marker_d294a852d85e8738d51c9c10293872b2.bindPopup(popup_68d93a378d5b9ae513650a343608176d)
+        ;
+
+        
+    
+    
+            var circle_marker_281f33d3b2a0c8b1a81d24953bde1635 = L.circleMarker(
+                [62.58599999999942, 26.728000000000478],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8, "stroke": true, "weight": 3}
+            ).addTo(feature_group_b0987627b200f3447d3fb5f9725c38a8);
+        
+    
+        var popup_951f46073a5ac4c14e6b8e4636fe86ba = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_6927fddb5592ef93cd957efd85f7dccb = $(`<div id="html_6927fddb5592ef93cd957efd85f7dccb" style="width: 100.0%; height: 100.0%;"><b>Candidate</b><br>Score: 0.03<br>Elevation: 128m<br>Elev score: 0.00<br>Cliff (steep+facing): 0.03<br>Prox score: 0.88<br>Approach: 0.14<br>Route bonus: 0.00</div>`)[0];
+                popup_951f46073a5ac4c14e6b8e4636fe86ba.setContent(html_6927fddb5592ef93cd957efd85f7dccb);
+            
+        
+
+        circle_marker_281f33d3b2a0c8b1a81d24953bde1635.bindPopup(popup_951f46073a5ac4c14e6b8e4636fe86ba)
+        ;
+
+        
+    
+    
+            var circle_marker_9a42abf340f20982af35d03e8631b66b = L.circleMarker(
+                [61.697999999999915, 25.664000000000122],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8, "stroke": true, "weight": 3}
+            ).addTo(feature_group_b0987627b200f3447d3fb5f9725c38a8);
+        
+    
+        var popup_0eee8fd7f1c33a53320e0d089c25e6d0 = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_3c29f3c60bf3809f9918d547c84684f6 = $(`<div id="html_3c29f3c60bf3809f9918d547c84684f6" style="width: 100.0%; height: 100.0%;"><b>Candidate</b><br>Score: 0.03<br>Elevation: 119m<br>Elev score: 0.00<br>Cliff (steep+facing): 0.03<br>Prox score: 0.76<br>Approach: 0.01<br>Route bonus: 0.00</div>`)[0];
+                popup_0eee8fd7f1c33a53320e0d089c25e6d0.setContent(html_3c29f3c60bf3809f9918d547c84684f6);
+            
+        
+
+        circle_marker_9a42abf340f20982af35d03e8631b66b.bindPopup(popup_0eee8fd7f1c33a53320e0d089c25e6d0)
+        ;
+
+        
+    
+    
+            var circle_marker_b90dbdb01ef796c894d3b40859844a77 = L.circleMarker(
+                [62.22999999999962, 25.83600000000018],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8, "stroke": true, "weight": 3}
+            ).addTo(feature_group_b0987627b200f3447d3fb5f9725c38a8);
+        
+    
+        var popup_083daf1aa6ec41451cddd5530ef07de2 = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_3712cb6de79f9747470f937de880fe1f = $(`<div id="html_3712cb6de79f9747470f937de880fe1f" style="width: 100.0%; height: 100.0%;"><b>Candidate</b><br>Score: 0.03<br>Elevation: 96m<br>Elev score: 0.65<br>Cliff (steep+facing): 0.02<br>Prox score: 0.69<br>Approach: 0.22<br>Route bonus: 0.00</div>`)[0];
+                popup_083daf1aa6ec41451cddd5530ef07de2.setContent(html_3712cb6de79f9747470f937de880fe1f);
+            
+        
+
+        circle_marker_b90dbdb01ef796c894d3b40859844a77.bindPopup(popup_083daf1aa6ec41451cddd5530ef07de2)
+        ;
+
+        
+    
+    
+            var circle_marker_06ac76946bb2c375e10da80b14b4f505 = L.circleMarker(
+                [62.561999999999436, 26.788000000000498],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8, "stroke": true, "weight": 3}
+            ).addTo(feature_group_b0987627b200f3447d3fb5f9725c38a8);
+        
+    
+        var popup_33aed73e755aa1ad482ae5fb1bac07f9 = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_48870228d302bc7a0dd7719fdbda40ff = $(`<div id="html_48870228d302bc7a0dd7719fdbda40ff" style="width: 100.0%; height: 100.0%;"><b>Candidate</b><br>Score: 0.02<br>Elevation: 102m<br>Elev score: 0.81<br>Cliff (steep+facing): 0.01<br>Prox score: 0.87<br>Approach: 0.20<br>Route bonus: 0.00</div>`)[0];
+                popup_33aed73e755aa1ad482ae5fb1bac07f9.setContent(html_48870228d302bc7a0dd7719fdbda40ff);
+            
+        
+
+        circle_marker_06ac76946bb2c375e10da80b14b4f505.bindPopup(popup_33aed73e755aa1ad482ae5fb1bac07f9)
+        ;
+
+        
+    
+    
+            var circle_marker_4977096e8eb7f50d0209f5b7b9b6abb1 = L.circleMarker(
+                [62.581999999999425, 26.70000000000047],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8, "stroke": true, "weight": 3}
+            ).addTo(feature_group_b0987627b200f3447d3fb5f9725c38a8);
+        
+    
+        var popup_272c40f2bb475922462e195922499dd2 = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_43d36bf875304a0d24a475c6610dceee = $(`<div id="html_43d36bf875304a0d24a475c6610dceee" style="width: 100.0%; height: 100.0%;"><b>Candidate</b><br>Score: 0.02<br>Elevation: 182m<br>Elev score: 0.00<br>Cliff (steep+facing): 0.02<br>Prox score: 0.90<br>Approach: 0.43<br>Route bonus: 0.01</div>`)[0];
+                popup_272c40f2bb475922462e195922499dd2.setContent(html_43d36bf875304a0d24a475c6610dceee);
+            
+        
+
+        circle_marker_4977096e8eb7f50d0209f5b7b9b6abb1.bindPopup(popup_272c40f2bb475922462e195922499dd2)
+        ;
+
+        
+    
+    
+            var circle_marker_7259b7ed783f8b8dcfa8c0e0b3751e07 = L.circleMarker(
+                [62.11799999999968, 25.920000000000208],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8, "stroke": true, "weight": 3}
+            ).addTo(feature_group_b0987627b200f3447d3fb5f9725c38a8);
+        
+    
+        var popup_3e8fe33348a06e5f223f88c6bb0d9de9 = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_bc8b5be08abb7e86e80168d2ba10bfcd = $(`<div id="html_bc8b5be08abb7e86e80168d2ba10bfcd" style="width: 100.0%; height: 100.0%;"><b>Candidate</b><br>Score: 0.01<br>Elevation: 164m<br>Elev score: 0.00<br>Cliff (steep+facing): 0.02<br>Prox score: 0.66<br>Approach: 0.17<br>Route bonus: 0.00</div>`)[0];
+                popup_3e8fe33348a06e5f223f88c6bb0d9de9.setContent(html_bc8b5be08abb7e86e80168d2ba10bfcd);
+            
+        
+
+        circle_marker_7259b7ed783f8b8dcfa8c0e0b3751e07.bindPopup(popup_3e8fe33348a06e5f223f88c6bb0d9de9)
+        ;
+
+        
+    
+    
+            var circle_marker_d393adb444fa4e8001b4caee7dd0662c = L.circleMarker(
+                [62.50599999999947, 26.188000000000297],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8, "stroke": true, "weight": 3}
+            ).addTo(feature_group_b0987627b200f3447d3fb5f9725c38a8);
+        
+    
+        var popup_64f9182c5101be88fdd2909c5f44245d = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_0fcea2de121d5522ea4dfbef1bb762d2 = $(`<div id="html_0fcea2de121d5522ea4dfbef1bb762d2" style="width: 100.0%; height: 100.0%;"><b>Candidate</b><br>Score: 0.01<br>Elevation: 105m<br>Elev score: 0.12<br>Cliff (steep+facing): 0.02<br>Prox score: 0.83<br>Approach: 0.09<br>Route bonus: 0.00</div>`)[0];
+                popup_64f9182c5101be88fdd2909c5f44245d.setContent(html_0fcea2de121d5522ea4dfbef1bb762d2);
+            
+        
+
+        circle_marker_d393adb444fa4e8001b4caee7dd0662c.bindPopup(popup_64f9182c5101be88fdd2909c5f44245d)
+        ;
+
+        
+    
+    
+            var circle_marker_8ee68c1902a6f1efb4702a7947cd4528 = L.circleMarker(
+                [61.70199999999991, 25.700000000000134],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8, "stroke": true, "weight": 3}
+            ).addTo(feature_group_b0987627b200f3447d3fb5f9725c38a8);
+        
+    
+        var popup_6b826dcbbe2326fd5627e179c316eb54 = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_485b5f9584071d22a875176217b9fe99 = $(`<div id="html_485b5f9584071d22a875176217b9fe99" style="width: 100.0%; height: 100.0%;"><b>Candidate</b><br>Score: 0.01<br>Elevation: 171m<br>Elev score: 0.00<br>Cliff (steep+facing): 0.02<br>Prox score: 0.73<br>Approach: 0.00<br>Route bonus: 0.00</div>`)[0];
+                popup_6b826dcbbe2326fd5627e179c316eb54.setContent(html_485b5f9584071d22a875176217b9fe99);
+            
+        
+
+        circle_marker_8ee68c1902a6f1efb4702a7947cd4528.bindPopup(popup_6b826dcbbe2326fd5627e179c316eb54)
+        ;
+
+        
+    
+    
+            var circle_marker_1e19ccf99619726a89bb4e4ac5d47539 = L.circleMarker(
+                [62.51399999999946, 26.76400000000049],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8, "stroke": true, "weight": 3}
+            ).addTo(feature_group_b0987627b200f3447d3fb5f9725c38a8);
+        
+    
+        var popup_62ca18a75c13b8a65b51362e36885fea = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_7f8cb73482a85c8b579f17fd944af5ec = $(`<div id="html_7f8cb73482a85c8b579f17fd944af5ec" style="width: 100.0%; height: 100.0%;"><b>Candidate</b><br>Score: 0.01<br>Elevation: 118m<br>Elev score: 0.15<br>Cliff (steep+facing): 0.01<br>Prox score: 0.89<br>Approach: 0.19<br>Route bonus: 0.00</div>`)[0];
+                popup_62ca18a75c13b8a65b51362e36885fea.setContent(html_7f8cb73482a85c8b579f17fd944af5ec);
+            
+        
+
+        circle_marker_1e19ccf99619726a89bb4e4ac5d47539.bindPopup(popup_62ca18a75c13b8a65b51362e36885fea)
+        ;
+
+        
+    
+    
+            var circle_marker_8716635e2797520e024f4e58d058abf7 = L.circleMarker(
+                [62.25399999999961, 25.9000000000002],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8, "stroke": true, "weight": 3}
+            ).addTo(feature_group_b0987627b200f3447d3fb5f9725c38a8);
+        
+    
+        var popup_e4dd9d899da06b158122efc3d1c42a8e = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_ea3f5259a22259104c2a746d07994301 = $(`<div id="html_ea3f5259a22259104c2a746d07994301" style="width: 100.0%; height: 100.0%;"><b>Candidate</b><br>Score: 0.01<br>Elevation: 117m<br>Elev score: 0.00<br>Cliff (steep+facing): 0.02<br>Prox score: 0.73<br>Approach: 0.08<br>Route bonus: 0.00</div>`)[0];
+                popup_e4dd9d899da06b158122efc3d1c42a8e.setContent(html_ea3f5259a22259104c2a746d07994301);
+            
+        
+
+        circle_marker_8716635e2797520e024f4e58d058abf7.bindPopup(popup_e4dd9d899da06b158122efc3d1c42a8e)
+        ;
+
+        
+    
+    
+            var circle_marker_0d22a0282d8abcbf137f0458113be174 = L.circleMarker(
+                [62.309999999999576, 25.71200000000014],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8, "stroke": true, "weight": 3}
+            ).addTo(feature_group_b0987627b200f3447d3fb5f9725c38a8);
+        
+    
+        var popup_ef74fb302e2d08dcaac6eb26645210a3 = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_84ffc17bf78ada0ee89bfe17e9128f81 = $(`<div id="html_84ffc17bf78ada0ee89bfe17e9128f81" style="width: 100.0%; height: 100.0%;"><b>Candidate</b><br>Score: 0.01<br>Elevation: 122m<br>Elev score: 0.00<br>Cliff (steep+facing): 0.01<br>Prox score: 0.83<br>Approach: 0.18<br>Route bonus: 0.00</div>`)[0];
+                popup_ef74fb302e2d08dcaac6eb26645210a3.setContent(html_84ffc17bf78ada0ee89bfe17e9128f81);
+            
+        
+
+        circle_marker_0d22a0282d8abcbf137f0458113be174.bindPopup(popup_ef74fb302e2d08dcaac6eb26645210a3)
+        ;
+
+        
+    
+    
+            var circle_marker_39e1e74063667924d09ea9b1e2127f4b = L.circleMarker(
+                [62.241999999999614, 25.8960000000002],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8, "stroke": true, "weight": 3}
+            ).addTo(feature_group_b0987627b200f3447d3fb5f9725c38a8);
+        
+    
+        var popup_708dd21870a030c33380af60542de53a = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_09618550c2174daf957dc1ff556739a5 = $(`<div id="html_09618550c2174daf957dc1ff556739a5" style="width: 100.0%; height: 100.0%;"><b>Candidate</b><br>Score: 0.01<br>Elevation: 123m<br>Elev score: 0.00<br>Cliff (steep+facing): 0.01<br>Prox score: 0.70<br>Approach: 0.01<br>Route bonus: 0.00</div>`)[0];
+                popup_708dd21870a030c33380af60542de53a.setContent(html_09618550c2174daf957dc1ff556739a5);
+            
+        
+
+        circle_marker_39e1e74063667924d09ea9b1e2127f4b.bindPopup(popup_708dd21870a030c33380af60542de53a)
+        ;
+
+        
+    
+    
+            var circle_marker_ddc04de71ff16701eb0303ff65409bff = L.circleMarker(
+                [61.59799999999997, 25.588000000000097],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8, "stroke": true, "weight": 3}
+            ).addTo(feature_group_b0987627b200f3447d3fb5f9725c38a8);
+        
+    
+        var popup_517f203b8c53d1ac68cdac3b6d15dc75 = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_04cb48d265748a2e863a4cbcc979c1a7 = $(`<div id="html_04cb48d265748a2e863a4cbcc979c1a7" style="width: 100.0%; height: 100.0%;"><b>Candidate</b><br>Score: 0.01<br>Elevation: 130m<br>Elev score: 0.00<br>Cliff (steep+facing): 0.01<br>Prox score: 0.84<br>Approach: 0.19<br>Route bonus: 0.00</div>`)[0];
+                popup_517f203b8c53d1ac68cdac3b6d15dc75.setContent(html_04cb48d265748a2e863a4cbcc979c1a7);
+            
+        
+
+        circle_marker_ddc04de71ff16701eb0303ff65409bff.bindPopup(popup_517f203b8c53d1ac68cdac3b6d15dc75)
+        ;
+
+        
+    
+    
+            var circle_marker_23b3a77bc28724889301fbcd5bbef42f = L.circleMarker(
+                [62.51799999999946, 26.748000000000484],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8, "stroke": true, "weight": 3}
+            ).addTo(feature_group_b0987627b200f3447d3fb5f9725c38a8);
+        
+    
+        var popup_e21c165c354488abf3f76196955afff7 = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_b3c808be852a42ed829a8b51ab6bf341 = $(`<div id="html_b3c808be852a42ed829a8b51ab6bf341" style="width: 100.0%; height: 100.0%;"><b>Candidate</b><br>Score: 0.01<br>Elevation: 144m<br>Elev score: 0.00<br>Cliff (steep+facing): 0.01<br>Prox score: 0.91<br>Approach: 0.14<br>Route bonus: 0.00</div>`)[0];
+                popup_e21c165c354488abf3f76196955afff7.setContent(html_b3c808be852a42ed829a8b51ab6bf341);
+            
+        
+
+        circle_marker_23b3a77bc28724889301fbcd5bbef42f.bindPopup(popup_e21c165c354488abf3f76196955afff7)
+        ;
+
+        
+    
+    
+            var circle_marker_a61cbe7b5d6ff67f3aa2ac4c95b53bc8 = L.circleMarker(
+                [61.7299999999999, 25.464000000000055],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8, "stroke": true, "weight": 3}
+            ).addTo(feature_group_b0987627b200f3447d3fb5f9725c38a8);
+        
+    
+        var popup_5535748219947dc8c87cde3daf1819c2 = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_ac42c833b5dee166008ceb560f793702 = $(`<div id="html_ac42c833b5dee166008ceb560f793702" style="width: 100.0%; height: 100.0%;"><b>Candidate</b><br>Score: 0.01<br>Elevation: 141m<br>Elev score: 0.00<br>Cliff (steep+facing): 0.01<br>Prox score: 0.80<br>Approach: 0.08<br>Route bonus: 0.00</div>`)[0];
+                popup_5535748219947dc8c87cde3daf1819c2.setContent(html_ac42c833b5dee166008ceb560f793702);
+            
+        
+
+        circle_marker_a61cbe7b5d6ff67f3aa2ac4c95b53bc8.bindPopup(popup_5535748219947dc8c87cde3daf1819c2)
+        ;
+
+        
+    
+    
+            var circle_marker_74abfe48ef1f45fc8a241e89985cabb1 = L.circleMarker(
+                [61.97399999999976, 25.496000000000066],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8, "stroke": true, "weight": 3}
+            ).addTo(feature_group_b0987627b200f3447d3fb5f9725c38a8);
+        
+    
+        var popup_23e0d165055e2cf83a85084b734d7008 = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_18862874dd7e65a1cab9add6bff8b51c = $(`<div id="html_18862874dd7e65a1cab9add6bff8b51c" style="width: 100.0%; height: 100.0%;"><b>Candidate</b><br>Score: 0.01<br>Elevation: 151m<br>Elev score: 0.00<br>Cliff (steep+facing): 0.01<br>Prox score: 0.73<br>Approach: 0.06<br>Route bonus: 0.00</div>`)[0];
+                popup_23e0d165055e2cf83a85084b734d7008.setContent(html_18862874dd7e65a1cab9add6bff8b51c);
+            
+        
+
+        circle_marker_74abfe48ef1f45fc8a241e89985cabb1.bindPopup(popup_23e0d165055e2cf83a85084b734d7008)
+        ;
+
+        
+    
+    
+            var circle_marker_3410c7061d6a7b423b9093d90868810b = L.circleMarker(
+                [61.85799999999983, 25.71600000000014],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8, "stroke": true, "weight": 3}
+            ).addTo(feature_group_b0987627b200f3447d3fb5f9725c38a8);
+        
+    
+        var popup_4f15974a526e2a8b6ce09eafc3da5574 = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_cf6a8554744a0ea4e37ff1043b4f26ec = $(`<div id="html_cf6a8554744a0ea4e37ff1043b4f26ec" style="width: 100.0%; height: 100.0%;"><b>Candidate</b><br>Score: 0.01<br>Elevation: 125m<br>Elev score: 0.00<br>Cliff (steep+facing): 0.01<br>Prox score: 0.71<br>Approach: 0.06<br>Route bonus: 0.00</div>`)[0];
+                popup_4f15974a526e2a8b6ce09eafc3da5574.setContent(html_cf6a8554744a0ea4e37ff1043b4f26ec);
+            
+        
+
+        circle_marker_3410c7061d6a7b423b9093d90868810b.bindPopup(popup_4f15974a526e2a8b6ce09eafc3da5574)
+        ;
+
+        
+    
+    
+            var circle_marker_d3b7a27727963ccf72147d1472dd5021 = L.circleMarker(
+                [62.55799999999944, 26.580000000000428],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8, "stroke": true, "weight": 3}
+            ).addTo(feature_group_b0987627b200f3447d3fb5f9725c38a8);
+        
+    
+        var popup_8549044251590c6de64427d960306bd8 = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_10b1977cebbd52359d9bd155fb24e899 = $(`<div id="html_10b1977cebbd52359d9bd155fb24e899" style="width: 100.0%; height: 100.0%;"><b>Candidate</b><br>Score: 0.01<br>Elevation: 106m<br>Elev score: 0.85<br>Cliff (steep+facing): 0.01<br>Prox score: 0.96<br>Approach: 0.20<br>Route bonus: 0.15</div>`)[0];
+                popup_8549044251590c6de64427d960306bd8.setContent(html_10b1977cebbd52359d9bd155fb24e899);
+            
+        
+
+        circle_marker_d3b7a27727963ccf72147d1472dd5021.bindPopup(popup_8549044251590c6de64427d960306bd8)
+        ;
+
+        
+    
+    
+            var circle_marker_995245ec501bfc89e175bc7bd564a654 = L.circleMarker(
+                [62.561999999999436, 26.692000000000466],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8, "stroke": true, "weight": 3}
+            ).addTo(feature_group_b0987627b200f3447d3fb5f9725c38a8);
+        
+    
+        var popup_e6c2a38f8d3ecd1c898984cb91aee648 = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_9f40118d96c9ace4e6016ac4f4d7792d = $(`<div id="html_9f40118d96c9ace4e6016ac4f4d7792d" style="width: 100.0%; height: 100.0%;"><b>Candidate</b><br>Score: 0.01<br>Elevation: 127m<br>Elev score: 0.00<br>Cliff (steep+facing): 0.01<br>Prox score: 0.95<br>Approach: 0.52<br>Route bonus: 0.02</div>`)[0];
+                popup_e6c2a38f8d3ecd1c898984cb91aee648.setContent(html_9f40118d96c9ace4e6016ac4f4d7792d);
+            
+        
+
+        circle_marker_995245ec501bfc89e175bc7bd564a654.bindPopup(popup_e6c2a38f8d3ecd1c898984cb91aee648)
+        ;
+
+        
+    
+    
+            var circle_marker_ce13fb80a67553479f64ab92ac90848a = L.circleMarker(
+                [61.7299999999999, 25.44800000000005],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8, "stroke": true, "weight": 3}
+            ).addTo(feature_group_b0987627b200f3447d3fb5f9725c38a8);
+        
+    
+        var popup_23878dc76bba1df5dc02b0c6b8f53a9b = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_3d118d51e427fee6959befc6090da39e = $(`<div id="html_3d118d51e427fee6959befc6090da39e" style="width: 100.0%; height: 100.0%;"><b>Candidate</b><br>Score: 0.00<br>Elevation: 103m<br>Elev score: 0.00<br>Cliff (steep+facing): 0.01<br>Prox score: 0.80<br>Approach: 0.09<br>Route bonus: 0.00</div>`)[0];
+                popup_23878dc76bba1df5dc02b0c6b8f53a9b.setContent(html_3d118d51e427fee6959befc6090da39e);
+            
+        
+
+        circle_marker_ce13fb80a67553479f64ab92ac90848a.bindPopup(popup_23878dc76bba1df5dc02b0c6b8f53a9b)
+        ;
+
+        
+    
+    
+            var circle_marker_f7a6e9daf0fd0e5f68e6878b1c15aa46 = L.circleMarker(
+                [61.92999999999979, 25.700000000000134],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8, "stroke": true, "weight": 3}
+            ).addTo(feature_group_b0987627b200f3447d3fb5f9725c38a8);
+        
+    
+        var popup_da11cb7f5347fa0f768aa79921d744a6 = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_a26191d3bdf88fc63f24d29ae9ec9438 = $(`<div id="html_a26191d3bdf88fc63f24d29ae9ec9438" style="width: 100.0%; height: 100.0%;"><b>Candidate</b><br>Score: 0.00<br>Elevation: 133m<br>Elev score: 0.00<br>Cliff (steep+facing): 0.01<br>Prox score: 0.86<br>Approach: 0.00<br>Route bonus: 0.00</div>`)[0];
+                popup_da11cb7f5347fa0f768aa79921d744a6.setContent(html_a26191d3bdf88fc63f24d29ae9ec9438);
+            
+        
+
+        circle_marker_f7a6e9daf0fd0e5f68e6878b1c15aa46.bindPopup(popup_da11cb7f5347fa0f768aa79921d744a6)
+        ;
+
+        
+    
+    
+            var circle_marker_65eade25314261e08cab1ef4ce67f4c1 = L.circleMarker(
+                [61.933999999999784, 25.696000000000133],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8, "stroke": true, "weight": 3}
+            ).addTo(feature_group_b0987627b200f3447d3fb5f9725c38a8);
+        
+    
+        var popup_8a34cca9f09fccbfc5b8bc7ebee4fa6a = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_5c0ec83a4d421f7020451669b5e6c560 = $(`<div id="html_5c0ec83a4d421f7020451669b5e6c560" style="width: 100.0%; height: 100.0%;"><b>Candidate</b><br>Score: 0.00<br>Elevation: 143m<br>Elev score: 0.00<br>Cliff (steep+facing): 0.01<br>Prox score: 0.87<br>Approach: 0.01<br>Route bonus: 0.00</div>`)[0];
+                popup_8a34cca9f09fccbfc5b8bc7ebee4fa6a.setContent(html_5c0ec83a4d421f7020451669b5e6c560);
+            
+        
+
+        circle_marker_65eade25314261e08cab1ef4ce67f4c1.bindPopup(popup_8a34cca9f09fccbfc5b8bc7ebee4fa6a)
+        ;
+
+        
+    
+    
+            var circle_marker_1bb09e4602e44433f618fe6764fc209e = L.circleMarker(
+                [62.293999999999585, 25.648000000000117],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8, "stroke": true, "weight": 3}
+            ).addTo(feature_group_b0987627b200f3447d3fb5f9725c38a8);
+        
+    
+        var popup_08deb2cec82ac2e2d0426a3cce8acf3d = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_3b282827a44adde68f7826038ce8be96 = $(`<div id="html_3b282827a44adde68f7826038ce8be96" style="width: 100.0%; height: 100.0%;"><b>Candidate</b><br>Score: 0.00<br>Elevation: 181m<br>Elev score: 0.00<br>Cliff (steep+facing): 0.01<br>Prox score: 0.76<br>Approach: 0.07<br>Route bonus: 0.00</div>`)[0];
+                popup_08deb2cec82ac2e2d0426a3cce8acf3d.setContent(html_3b282827a44adde68f7826038ce8be96);
+            
+        
+
+        circle_marker_1bb09e4602e44433f618fe6764fc209e.bindPopup(popup_08deb2cec82ac2e2d0426a3cce8acf3d)
+        ;
+
+        
+    
+    
+            var circle_marker_d9f9e89965f90313397454444a2114f4 = L.circleMarker(
+                [61.92599999999979, 25.704000000000136],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8, "stroke": true, "weight": 3}
+            ).addTo(feature_group_b0987627b200f3447d3fb5f9725c38a8);
+        
+    
+        var popup_7710790f104d831b8e598272a4e41871 = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_4b386c85c2e786b60fca3940825b0a4c = $(`<div id="html_4b386c85c2e786b60fca3940825b0a4c" style="width: 100.0%; height: 100.0%;"><b>Candidate</b><br>Score: 0.00<br>Elevation: 97m<br>Elev score: 0.32<br>Cliff (steep+facing): 0.00<br>Prox score: 0.85<br>Approach: 0.03<br>Route bonus: 0.00</div>`)[0];
+                popup_7710790f104d831b8e598272a4e41871.setContent(html_4b386c85c2e786b60fca3940825b0a4c);
+            
+        
+
+        circle_marker_d9f9e89965f90313397454444a2114f4.bindPopup(popup_7710790f104d831b8e598272a4e41871)
+        ;
+
+        
+    
+    
+            feature_group_b0987627b200f3447d3fb5f9725c38a8.addTo(map_323185ebdbaf21aac2a8281386714e93);
+        
+    
+            var feature_group_220a8eefcc268ae8be769ea4590d19da = L.featureGroup(
+                {
+}
+            );
+        
+    
+            var circle_marker_d50b0b26cf14f8e1f4731c1cbf60d8ae = L.circleMarker(
+                [62.4176, 25.9973],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 3}
+            ).addTo(feature_group_220a8eefcc268ae8be769ea4590d19da);
+        
+    
+        var popup_a6d7b4bf64aaf0b8c8e35a870453edf8 = L.popup({
+  "maxWidth": 250,
+});
+
+        
+            
+                var html_a4c9c3e466b33bb435eb948862d62c1b = $(`<div id="html_a4c9c3e466b33bb435eb948862d62c1b" style="width: 100.0%; height: 100.0%;"><b>Saraakallio I (Laukaa)</b><br>Access: boat<br><small>One of Fennoscandia's largest rock art complexes. Hundreds of figures spanning thousands of years.</small></div>`)[0];
+                popup_a6d7b4bf64aaf0b8c8e35a870453edf8.setContent(html_a4c9c3e466b33bb435eb948862d62c1b);
+            
+        
+
+        circle_marker_d50b0b26cf14f8e1f4731c1cbf60d8ae.bindPopup(popup_a6d7b4bf64aaf0b8c8e35a870453edf8)
+        ;
+
+        
+    
+    
+            var circle_marker_64a66c11c924624a2dc5df47272d9e8b = L.circleMarker(
+                [62.4195, 25.992],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 3}
+            ).addTo(feature_group_220a8eefcc268ae8be769ea4590d19da);
+        
+    
+        var popup_e2afb32dac20ed1a66a0bc809f0ff71f = L.popup({
+  "maxWidth": 250,
+});
+
+        
+            
+                var html_b639e4cf4d6574276f8a1833b033736d = $(`<div id="html_b639e4cf4d6574276f8a1833b033736d" style="width: 100.0%; height: 100.0%;"><b>Saraakallio II (Laukaa)</b><br>Access: boat<br><small>Secondary site ~300m from Saraakallio I on Saraavesi shore.</small></div>`)[0];
+                popup_e2afb32dac20ed1a66a0bc809f0ff71f.setContent(html_b639e4cf4d6574276f8a1833b033736d);
+            
+        
+
+        circle_marker_64a66c11c924624a2dc5df47272d9e8b.bindPopup(popup_e2afb32dac20ed1a66a0bc809f0ff71f)
+        ;
+
+        
+    
+    
+            var circle_marker_4755cd2d42d6fa8a0976640b869e8c0f = L.circleMarker(
+                [62.4332, 26.2413],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 3}
+            ).addTo(feature_group_220a8eefcc268ae8be769ea4590d19da);
+        
+    
+        var popup_93c18c6129932c7fbcf7dacd830e24a9 = L.popup({
+  "maxWidth": 250,
+});
+
+        
+            
+                var html_e169f0f946a1423ca9f8f54dcd54c0e3 = $(`<div id="html_e169f0f946a1423ca9f8f54dcd54c0e3" style="width: 100.0%; height: 100.0%;"><b>Toussunlinna (Laukaa / Hankavesi)</b><br>Access: boat<br><small>Vertical cliff face rising straight from lake. Elk figure. Practically inaccessible except by water.</small></div>`)[0];
+                popup_93c18c6129932c7fbcf7dacd830e24a9.setContent(html_e169f0f946a1423ca9f8f54dcd54c0e3);
+            
+        
+
+        circle_marker_4755cd2d42d6fa8a0976640b869e8c0f.bindPopup(popup_93c18c6129932c7fbcf7dacd830e24a9)
+        ;
+
+        
+    
+    
+            var circle_marker_cb8de9926e40985d13dd95df5eda6135 = L.circleMarker(
+                [61.6418, 25.4745],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 3}
+            ).addTo(feature_group_220a8eefcc268ae8be769ea4590d19da);
+        
+    
+        var popup_5f67a3e05f151d7ef5134b00d653abc4 = L.popup({
+  "maxWidth": 250,
+});
+
+        
+            
+                var html_0ceba46a1e68ae7b5889b206a9ac08af = $(`<div id="html_0ceba46a1e68ae7b5889b206a9ac08af" style="width: 100.0%; height: 100.0%;"><b>Pyhänpää (Päijänne south)</b><br>Access: mixed<br><small>Multiple painting groups on southern Päijänne shore. Paintings notably high above current water.</small></div>`)[0];
+                popup_5f67a3e05f151d7ef5134b00d653abc4.setContent(html_0ceba46a1e68ae7b5889b206a9ac08af);
+            
+        
+
+        circle_marker_cb8de9926e40985d13dd95df5eda6135.bindPopup(popup_5f67a3e05f151d7ef5134b00d653abc4)
+        ;
+
+        
+    
+    
+            var circle_marker_d2e8be87efab4fc2a8f813a39f52343f = L.circleMarker(
+                [62.5701, 26.5492],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 3}
+            ).addTo(feature_group_220a8eefcc268ae8be769ea4590d19da);
+        
+    
+        var popup_88fea6a8bbf2e641531248416281c4c2 = L.popup({
+  "maxWidth": 250,
+});
+
+        
+            
+                var html_84719f3417027cb2b89518579b6a40b4 = $(`<div id="html_84719f3417027cb2b89518579b6a40b4" style="width: 100.0%; height: 100.0%;"><b>Uittovuori (Konnevesi)</b><br>Access: boat<br><small>On the water travel corridor between Keitele and Konnevesi — route site.</small></div>`)[0];
+                popup_88fea6a8bbf2e641531248416281c4c2.setContent(html_84719f3417027cb2b89518579b6a40b4);
+            
+        
+
+        circle_marker_d2e8be87efab4fc2a8f813a39f52343f.bindPopup(popup_88fea6a8bbf2e641531248416281c4c2)
+        ;
+
+        
+    
+    
+            var circle_marker_1d3662408fcf1aa24bc9f4d01f5a464d = L.circleMarker(
+                [62.3786, 26.2411],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 3}
+            ).addTo(feature_group_220a8eefcc268ae8be769ea4590d19da);
+        
+    
+        var popup_9b5ec08a13869df2c8672f81a9102a28 = L.popup({
+  "maxWidth": 250,
+});
+
+        
+            
+                var html_5e22bf7338b1780ac9c952655a19021e = $(`<div id="html_5e22bf7338b1780ac9c952655a19021e" style="width: 100.0%; height: 100.0%;"><b>Paanalansaari (Hankavesi area)</b><br>Access: boat<br><small>Rock painting on Paanalansaari island. Approx coords from map search.</small></div>`)[0];
+                popup_9b5ec08a13869df2c8672f81a9102a28.setContent(html_5e22bf7338b1780ac9c952655a19021e);
+            
+        
+
+        circle_marker_1d3662408fcf1aa24bc9f4d01f5a464d.bindPopup(popup_9b5ec08a13869df2c8672f81a9102a28)
+        ;
+
+        
+    
+    
+            var circle_marker_052a6365818d226826d715b2d7a836d8 = L.circleMarker(
+                [62.3699, 25.8124],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 3}
+            ).addTo(feature_group_220a8eefcc268ae8be769ea4590d19da);
+        
+    
+        var popup_7ca2a04fe1e64d3d5ba65beca63449f2 = L.popup({
+  "maxWidth": 250,
+});
+
+        
+            
+                var html_e9b83038270f49175c6eb6ee56d2e541 = $(`<div id="html_e9b83038270f49175c6eb6ee56d2e541" style="width: 100.0%; height: 100.0%;"><b>Halsvuori (Laukaa)</b><br>Access: mixed<br><small>Tourist attraction, rock painting.</small></div>`)[0];
+                popup_7ca2a04fe1e64d3d5ba65beca63449f2.setContent(html_e9b83038270f49175c6eb6ee56d2e541);
+            
+        
+
+        circle_marker_052a6365818d226826d715b2d7a836d8.bindPopup(popup_7ca2a04fe1e64d3d5ba65beca63449f2)
+        ;
+
+        
+    
+    
+            var circle_marker_3352d41d52ea427bc7d1db7ca1cd2265 = L.circleMarker(
+                [62.5411, 26.6699],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 3}
+            ).addTo(feature_group_220a8eefcc268ae8be769ea4590d19da);
+        
+    
+        var popup_a73e8e56e93713c4949ff7799b68644f = L.popup({
+  "maxWidth": 250,
+});
+
+        
+            
+                var html_08884cd9701c57f43f0f656f63a5e758 = $(`<div id="html_08884cd9701c57f43f0f656f63a5e758" style="width: 100.0%; height: 100.0%;"><b>Kumpusaari (Konnevesi)</b><br>Access: boat<br><small>Island site near Uittovuori on Konnevesi water route.</small></div>`)[0];
+                popup_a73e8e56e93713c4949ff7799b68644f.setContent(html_08884cd9701c57f43f0f656f63a5e758);
+            
+        
+
+        circle_marker_3352d41d52ea427bc7d1db7ca1cd2265.bindPopup(popup_a73e8e56e93713c4949ff7799b68644f)
+        ;
+
+        
+    
+    
+            var circle_marker_b9f1a80b22656233b7f3275be0582aa5 = L.circleMarker(
+                [61.9882, 25.7516],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 3}
+            ).addTo(feature_group_220a8eefcc268ae8be769ea4590d19da);
+        
+    
+        var popup_78e7cb7d415c19af9d0f22f580f92267 = L.popup({
+  "maxWidth": 250,
+});
+
+        
+            
+                var html_b336f9356688f1f350486b224645379e = $(`<div id="html_b336f9356688f1f350486b224645379e" style="width: 100.0%; height: 100.0%;"><b>Hakavuori</b><br>Access: mixed<br><small>Rock painting site.</small></div>`)[0];
+                popup_78e7cb7d415c19af9d0f22f580f92267.setContent(html_b336f9356688f1f350486b224645379e);
+            
+        
+
+        circle_marker_b9f1a80b22656233b7f3275be0582aa5.bindPopup(popup_78e7cb7d415c19af9d0f22f580f92267)
+        ;
+
+        
+    
+    
+            feature_group_220a8eefcc268ae8be769ea4590d19da.addTo(map_323185ebdbaf21aac2a8281386714e93);
+        
+    
+            var layer_control_6112741cd7e36dbad3c4a0a1011db757_layers = {
+                base_layers : {
+                    "openstreetmap" : tile_layer_4e6a0cfebffc82fc24adf3e8aa1cf94d,
+                    "Satellite" : tile_layer_f3b107659e8d62314c6953a20032532a,
+                },
+                overlays :  {
+                    "Likelihood heatmap" : heat_map_6c0af2b041980b9834a90380b4dc70d2,
+                    "Top 30 candidates" : feature_group_b0987627b200f3447d3fb5f9725c38a8,
+                    "Known rock art sites (red)" : feature_group_220a8eefcc268ae8be769ea4590d19da,
+                },
+            };
+            let layer_control_6112741cd7e36dbad3c4a0a1011db757 = L.control.layers(
+                layer_control_6112741cd7e36dbad3c4a0a1011db757_layers.base_layers,
+                layer_control_6112741cd7e36dbad3c4a0a1011db757_layers.overlays,
+                {
+  "position": "topright",
+  "collapsed": true,
+  "autoZIndex": true,
+}
+            ).addTo(map_323185ebdbaf21aac2a8281386714e93);
+
+        
+</script>
+</html>

@@ -1,0 +1,8 @@
+*.hgt.gz
+*.hgt
+dem_cache.tif
+_tmp_*.tif
+candidates.json
+known_sites.geojson
+__pycache__/
+.claude/
