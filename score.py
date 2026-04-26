@@ -45,7 +45,7 @@ GRID_STEP = 0.004          # ~300 m grid spacing
 # → sites sit roughly 2–20m above their lake surface
 ELEV_ABOVE_LAKE_MIN = 0    # metres above local lake surface (Toussunlinna is ~0m)
 ELEV_ABOVE_LAKE_MAX = 25   # metres above local lake surface (Pyhänpää ~24m above Päijänne)
-ELEV_ABOVE_LAKE_PEAK = 5   # sweet spot adjusted — several sites cluster 2–8m above water
+ELEV_ABOVE_LAKE_PEAK = 7   # sweet spot — real site data averages ~7m above lake surface
 
 # Approximate lake surface elevations (asl) for scoring
 LAKE_SURFACES = [
