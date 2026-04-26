@@ -505,10 +505,10 @@ def build_map(scored, known_sites):
     ).add_to(m)
 
     # Heatmap of candidate scores
-    heat_data = [[r["lat"], r["lon"], r["score"]] for r in scored if r["score"] > 0.05]
+    heat_data = [[r["lat"], r["lon"], r["score"]] for r in scored if r["score"] > 0.55]
     print(f"  Heatmap points: {len(heat_data)}")
-    HeatMap(heat_data, radius=15, blur=25, min_opacity=0.05, max_opacity=0.45,
-            gradient={0.0: "blue", 0.5: "lime", 0.75: "yellow", 1.0: "red"},
+    HeatMap(heat_data, radius=14, blur=22, min_opacity=0.1, max_opacity=0.6,
+            gradient={0.0: "#440000", 0.5: "orange", 0.75: "yellow", 1.0: "red"},
             name="Likelihood heatmap", show=False).add_to(m)
 
     # Ancient shoreline band — tight 3–12m band above nearest lake surface.
