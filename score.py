@@ -745,6 +745,9 @@ def build_map(scored, known_sites):
         document.getElementById('gps-btn').style.background = '#FF9800';
       }
     });
+
+    // Auto-start GPS on page load
+    toggleTracking();
     </script>
 
     <div style="position:fixed;bottom:30px;right:10px;z-index:1000">
