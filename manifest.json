@@ -1,0 +1,17 @@
+{
+  "name": "Rock Art Finder",
+  "short_name": "RockArt",
+  "description": "Find Finnish rock art sites",
+  "start_url": "/rock-art-finder/map.html",
+  "display": "fullscreen",
+  "orientation": "any",
+  "background_color": "#1a1a2e",
+  "theme_color": "#2196F3",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🪨</text></svg>",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
