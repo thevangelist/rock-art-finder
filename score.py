@@ -137,6 +137,13 @@ MANUAL_KNOWN_SITES = [
         "note": "Rock painting on Avosaari island, Päijänne.",
         "elev_above_water": 3,
     },
+    {
+        "name": "Viherinkoski (Päijänne)",
+        "lon": 26.1862, "lat": 61.7286,
+        "access": "mixed",
+        "note": "Rock paintings at Viherinkoski.",
+        "elev_above_water": 3,
+    },
 ]
 
 
