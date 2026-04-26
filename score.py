@@ -516,46 +516,43 @@ def build_map(scored, known_sites):
 
     gps_js = """
     <style>
-    #nearest-modal {
-      display:none; position:fixed; top:0; left:0; width:100%; height:100%;
-      background:rgba(0,0,0,0.5); z-index:9999; align-items:center; justify-content:center;
+    #panel {
+      position:fixed; top:0; right:-320px; width:300px; height:100%;
+      background:white; z-index:9999; transition:right .3s ease;
+      display:flex; flex-direction:column; font-family:sans-serif;
+      box-shadow:-4px 0 20px rgba(0,0,0,0.2);
     }
-    #nearest-modal.open { display:flex; }
-    #nearest-box {
-      background:white; border-radius:12px; width:90%; max-width:380px;
-      max-height:80vh; overflow-y:auto; font-family:sans-serif;
-      box-shadow:0 8px 32px rgba(0,0,0,0.4);
+    #panel.open { right:0; }
+    #panel-header {
+      padding:14px 16px; background:#2196F3; color:white;
+      display:flex; justify-content:space-between; align-items:center; flex-shrink:0;
     }
-    #nearest-box h3 {
-      margin:0; padding:16px; border-bottom:1px solid #eee; font-size:16px;
+    #panel-header h3 { margin:0; font-size:15px; }
+    #panel-close { cursor:pointer; font-size:22px; line-height:1; padding:0 4px; }
+    #panel-list { overflow-y:auto; flex:1; }
+    .crow {
+      padding:13px 16px; border-bottom:1px solid #f0f0f0; cursor:pointer;
+      display:flex; align-items:center; gap:12px; text-decoration:none; color:inherit;
     }
-    #nearest-box .close-btn {
-      float:right; cursor:pointer; font-size:20px; color:#888; line-height:1;
-    }
-    .candidate-row {
-      padding:12px 16px; border-bottom:1px solid #f0f0f0; cursor:pointer;
-      display:flex; align-items:center; gap:12px;
-    }
-    .candidate-row:hover { background:#f5f5f5; }
-    .candidate-row:active { background:#e3f2fd; }
-    .candidate-rank {
+    .crow:hover, .crow:active { background:#e3f2fd; }
+    .crank {
       background:#FF9800; color:white; border-radius:50%;
-      width:28px; height:28px; display:flex; align-items:center;
-      justify-content:center; font-weight:bold; font-size:13px; flex-shrink:0;
+      width:30px; height:30px; min-width:30px;
+      display:flex; align-items:center; justify-content:center;
+      font-weight:bold; font-size:13px;
     }
-    .candidate-info { flex:1; }
-    .candidate-dist { font-size:15px; font-weight:600; color:#333; }
-    .candidate-meta { font-size:12px; color:#888; margin-top:2px; }
-    .candidate-gmaps {
-      font-size:12px; color:#2196F3; text-decoration:none; margin-top:4px; display:block;
-    }
+    .cinfo { flex:1; min-width:0; }
+    .cdist { font-size:14px; font-weight:600; color:#222; }
+    .cmeta { font-size:12px; color:#777; margin-top:2px; }
+    .cgmaps { font-size:12px; color:#2196F3; display:block; margin-top:3px; }
     </style>
 
-    <div id="nearest-modal">
-      <div id="nearest-box">
-        <h3>Nearest candidates <span class="close-btn" onclick="closeModal()">✕</span></h3>
-        <div id="nearest-list"></div>
+    <div id="panel">
+      <div id="panel-header">
+        <h3>📍 Nearest candidates</h3>
+        <span id="panel-close" onclick="document.getElementById('panel').classList.remove('open')">✕</span>
       </div>
+      <div id="panel-list"></div>
     </div>
 
     <script>
@@ -563,31 +560,39 @@ def build_map(scored, known_sites):
     var _map = map_""" + map_name + """;
     var _userMarker = null;
 
-    function closeModal() {
-      document.getElementById('nearest-modal').classList.remove('open');
+    function focusCandidate(lat, lon) {
+      document.getElementById('panel').classList.remove('open');
+      _map.setView([lat, lon], 15);
     }
 
-    function focusCandidate(lat, lon) {
-      closeModal();
-      _map.setView([lat, lon], 15);
-      // find and open the matching marker popup
-      _map.eachLayer(function(layer) {
-        if (layer instanceof L.CircleMarker) {
-          var ll = layer.getLatLng();
-          if (Math.abs(ll.lat - lat) < 0.0001 && Math.abs(ll.lng - lon) < 0.0001) {
-            layer.openPopup();
-          }
-        }
+    function showNearest(lat, lon) {
+      var dists = CANDIDATES.map(function(c) {
+        var dlat = c.lat - lat, dlon = c.lon - lon;
+        return Object.assign({}, c, {dist: Math.sqrt(dlat*dlat + dlon*dlon) * 111});
       });
+      dists.sort(function(a,b){ return a.dist - b.dist; });
+      var html = '';
+      dists.slice(0, 10).forEach(function(c, i) {
+        var pct = Math.round(c.score * 100);
+        var label = pct >= 70 ? '🟢 High' : pct >= 45 ? '🟡 Medium' : '🔴 Low';
+        var elev = c.elevation ? c.elevation.toFixed(0) + 'm' : '';
+        var gmaps = 'https://maps.google.com/?q=' + c.lat.toFixed(5) + ',' + c.lon.toFixed(5);
+        html += '<div class="crow" onclick="focusCandidate(' + c.lat + ',' + c.lon + ')">';
+        html += '<div class="crank">' + (i+1) + '</div>';
+        html += '<div class="cinfo">';
+        html += '<div class="cdist">' + c.dist.toFixed(1) + ' km &nbsp;' + label + ' ' + pct + '%' + (elev ? ' · ' + elev : '') + '</div>';
+        html += '<a class="cgmaps" href="' + gmaps + '" target="_blank" onclick="event.stopPropagation()">Open in Google Maps ↗</a>';
+        html += '</div></div>';
+      });
+      document.getElementById('panel-list').innerHTML = html;
+      document.getElementById('panel').classList.add('open');
     }
 
     function findNearest() {
-      if (!navigator.geolocation) { alert('Geolocation not supported'); return; }
+      var center = _map.getCenter();
+      if (!navigator.geolocation) { showNearest(center.lat, center.lng); return; }
       navigator.geolocation.getCurrentPosition(function(pos) {
-        var lat = pos.coords.latitude;
-        var lon = pos.coords.longitude;
-
-        // Show user location
+        var lat = pos.coords.latitude, lon = pos.coords.longitude;
         if (_userMarker) _map.removeLayer(_userMarker);
         _userMarker = L.marker([lat, lon], {
           icon: L.divIcon({
@@ -596,35 +601,8 @@ def build_map(scored, known_sites):
           })
         }).addTo(_map).bindPopup('Your location').openPopup();
         _map.setView([lat, lon], 12);
-
-        // Compute distances
-        var dists = CANDIDATES.map(function(c) {
-          var dlat = c.lat - lat, dlon = c.lon - lon;
-          var km = Math.sqrt(dlat*dlat + dlon*dlon) * 111;
-          return Object.assign({}, c, {dist: km});
-        });
-        dists.sort(function(a,b){ return a.dist - b.dist; });
-        var nearest = dists.slice(0, 8);
-
-        // Build modal list
-        var html = '';
-        nearest.forEach(function(c, i) {
-          var elev = c.elevation ? c.elevation.toFixed(0) + 'm asl' : '';
-          var gmaps = 'https://maps.google.com/?q=' + c.lat.toFixed(5) + ',' + c.lon.toFixed(5);
-          html += '<div class="candidate-row" onclick="focusCandidate(' + c.lat + ',' + c.lon + ')">';
-          html += '<div class="candidate-rank">' + (i+1) + '</div>';
-          html += '<div class="candidate-info">';
-          var pct = Math.round(c.score * 100);
-          var label = pct >= 70 ? '🟢 High' : pct >= 45 ? '🟡 Medium' : '🔴 Low';
-          html += '<div class="candidate-dist">' + c.dist.toFixed(1) + ' km away</div>';
-          html += '<div class="candidate-meta">' + label + ' · ' + pct + '% · ' + (elev ? elev : '') + '</div>';
-          html += '<a class="candidate-gmaps" href="' + gmaps + '" target="_blank" onclick="event.stopPropagation()">Open in Google Maps ↗</a>';
-          html += '</div></div>';
-        });
-        document.getElementById('nearest-list').innerHTML = html;
-        document.getElementById('nearest-modal').classList.add('open');
-
-      }, function(e){ alert('Could not get location: ' + e.message); });
+        showNearest(lat, lon);
+      }, function() { showNearest(center.lat, center.lng); });
     }
     </script>
 
