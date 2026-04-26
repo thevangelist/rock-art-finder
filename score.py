@@ -651,13 +651,17 @@ def build_map(scored, known_sites):
     var CANDIDATES = """ + candidates_json + """;
     var _map = map_""" + map_name + """;
     var _userMarker = null;
+    var _accuracyCircle = null;
+    var _watchId = null;
+    var _tracking = false;
+    var _lastLat = null, _lastLon = null;
 
     function focusCandidate(lat, lon) {
       document.getElementById('panel').classList.remove('open');
       _map.setView([lat, lon], 15);
     }
 
-    function showNearest(lat, lon) {
+    function renderNearest(lat, lon) {
       var dists = CANDIDATES.map(function(c) {
         var dlat = c.lat - lat, dlon = c.lon - lon;
         return Object.assign({}, c, {dist: Math.sqrt(dlat*dlat + dlon*dlon) * 111});
@@ -670,12 +674,12 @@ def build_map(scored, known_sites):
         var elev = c.elevation ? c.elevation.toFixed(0) + 'm' : '';
         var gmaps = 'https://maps.google.com/?q=' + c.lat.toFixed(5) + ',' + c.lon.toFixed(5);
         var retki = 'https://www.retkikartta.fi/?lat=' + c.lat.toFixed(5) + '&lng=' + c.lon.toFixed(5) + '&zoom=15';
+        var above = c.above_lake != null ? c.above_lake.toFixed(0) + 'm above lake' : '';
+        var portage = c.portage > 0.4 ? ' · portage' : '';
         html += '<div class="crow" onclick="focusCandidate(' + c.lat + ',' + c.lon + ')">';
         html += '<div class="crank">' + (i+1) + '</div>';
         html += '<div class="cinfo">';
-        var above = c.above_lake != null ? c.above_lake.toFixed(0) + 'm above lake' : '';
-        var portage = c.portage > 0.4 ? ' · portage corridor' : '';
-        html += '<div class="cdist">' + c.dist.toFixed(1) + ' km &nbsp;' + label + ' ' + pct + '%' + '</div>';
+        html += '<div class="cdist">' + c.dist.toFixed(1) + ' km &nbsp;' + label + ' ' + pct + '%</div>';
         html += '<div class="cmeta">' + (elev ? elev + ' asl' : '') + (above ? ' · ' + above : '') + portage + '</div>';
         html += '<a class="cgmaps" href="' + gmaps + '" target="_blank" onclick="event.stopPropagation()">📍 Google Maps</a> ';
         html += '<a class="cgmaps" href="' + retki + '" target="_blank" onclick="event.stopPropagation()">🥾 Retkikartta</a>';
@@ -685,29 +689,72 @@ def build_map(scored, known_sites):
       document.getElementById('panel').classList.add('open');
     }
 
-    function findNearest() {
-      var center = _map.getCenter();
-      if (!navigator.geolocation) { showNearest(center.lat, center.lng); return; }
-      navigator.geolocation.getCurrentPosition(function(pos) {
-        var lat = pos.coords.latitude, lon = pos.coords.longitude;
-        if (_userMarker) _map.removeLayer(_userMarker);
+    function updatePosition(pos) {
+      var lat = pos.coords.latitude, lon = pos.coords.longitude;
+      var acc = pos.coords.accuracy;
+      _lastLat = lat; _lastLon = lon;
+
+      // Update or create user dot
+      if (_userMarker) {
+        _userMarker.setLatLng([lat, lon]);
+        _accuracyCircle.setLatLng([lat, lon]).setRadius(acc);
+      } else {
         _userMarker = L.marker([lat, lon], {
           icon: L.divIcon({
-            html: '<div style="background:#2196F3;width:14px;height:14px;border-radius:50%;border:3px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.4)"></div>',
-            iconSize:[14,14], iconAnchor:[7,7]
-          })
-        }).addTo(_map).bindPopup('Your location').openPopup();
-        _map.setView([lat, lon], 12);
-        showNearest(lat, lon);
-      }, function() { showNearest(center.lat, center.lng); });
+            html: '<div style="background:#2196F3;width:16px;height:16px;border-radius:50%;border:3px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.5)"></div>',
+            iconSize:[16,16], iconAnchor:[8,8]
+          }),
+          zIndexOffset: 1000
+        }).addTo(_map);
+        _accuracyCircle = L.circle([lat, lon], {radius: acc, color:'#2196F3', fillOpacity:0.08, weight:1}).addTo(_map);
+        _map.setView([lat, lon], 13);
+      }
+
+      // Update panel if open
+      if (document.getElementById('panel').classList.contains('open')) {
+        renderNearest(lat, lon);
+      }
+
+      // Update button
+      var btn = document.getElementById('gps-btn');
+      if (btn) btn.innerHTML = '📍 Live · ' + lat.toFixed(4) + ', ' + lon.toFixed(4);
+    }
+
+    function gpsError() {
+      var btn = document.getElementById('gps-btn');
+      if (btn) btn.innerHTML = '📍 GPS unavailable';
+      stopTracking();
+    }
+
+    function stopTracking() {
+      if (_watchId !== null) { navigator.geolocation.clearWatch(_watchId); _watchId = null; }
+      _tracking = false;
+      var btn = document.getElementById('gps-btn');
+      if (btn) btn.style.background = '#2196F3';
+    }
+
+    function toggleTracking() {
+      if (!navigator.geolocation) { alert('GPS not available in this browser'); return; }
+      if (_tracking) {
+        stopTracking();
+        document.getElementById('panel').classList.remove('open');
+      } else {
+        _tracking = true;
+        var btn = document.getElementById('gps-btn');
+        if (btn) btn.style.background = '#4CAF50';
+        _watchId = navigator.geolocation.watchPosition(updatePosition, gpsError, {
+          enableHighAccuracy: true, maximumAge: 5000, timeout: 15000
+        });
+      }
     }
     </script>
 
     <div style="position:fixed;bottom:30px;right:10px;z-index:1000">
-      <button onclick="findNearest()" style="background:#2196F3;color:white;border:none;
-        padding:14px 20px;border-radius:28px;font-size:15px;cursor:pointer;
-        box-shadow:2px 2px 10px rgba(0,0,0,0.4);font-weight:600">
-        📍 Nearest candidates
+      <button id="gps-btn" onclick="toggleTracking()" style="background:#2196F3;color:white;border:none;
+        padding:14px 18px;border-radius:28px;font-size:14px;cursor:pointer;
+        box-shadow:2px 2px 10px rgba(0,0,0,0.4);font-weight:600;max-width:260px;
+        white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
+        📍 Start GPS tracking
       </button>
     </div>
     """
