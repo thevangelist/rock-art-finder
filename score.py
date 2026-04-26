@@ -510,6 +510,14 @@ def build_map(scored, known_sites):
             gradient={0.0: "blue", 0.5: "lime", 0.75: "yellow", 1.0: "red"},
             name="Likelihood heatmap", show=False).add_to(m)
 
+    # Ancient shoreline band — areas within the 0–25m elevation band above nearest lake
+    # These would have been at or near the waterline in the Stone Age.
+    shore_data = [[r["lat"], r["lon"], r["elev_score"]] for r in scored if r["elev_score"] > 0.1]
+    print(f"  Ancient shoreline points: {len(shore_data)}")
+    HeatMap(shore_data, radius=12, blur=20, min_opacity=0.04, max_opacity=0.5,
+            gradient={0.0: "#003366", 0.4: "#0077bb", 0.7: "#00ccdd", 1.0: "#aaffee"},
+            name="Ancient shoreline band", show=False).add_to(m)
+
     # Top candidates as markers
     top = sorted(scored, key=lambda x: x["score"], reverse=True)[:30]
     candidate_group = folium.FeatureGroup(name="Top 30 candidates")
