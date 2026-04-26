@@ -747,7 +747,22 @@ def main():
 
     print("\nBuilding map...")
     m = build_map(scored, known_sites)
-    m.save("map.html")
+    html = m._repr_html_()
+
+    # Folium adds all tile layers with addTo() — satellite ends up on top.
+    # Fix: read the generated HTML and remove the satellite layer's addTo call.
+    import re
+    with open("map.html", "w") as f:
+        raw = m.get_root().render()
+        # Find the satellite tile layer variable name (Esri source)
+        sat_var = re.search(r'(tile_layer_\w+)\.addTo.*\n.*arcgisonline', raw)
+        if not sat_var:
+            # Try finding by Esri attribution line proximity
+            sat_var = re.search(r'var (tile_layer_\w+) = L\.tileLayer\(\s*"https://server\.arcgisonline', raw)
+        if sat_var:
+            var_name = sat_var.group(1)
+            raw = raw.replace(f"{var_name}.addTo(", f"// {var_name}.addTo(", 1)
+        f.write(raw)
     print("Map saved to map.html — open it in your browser!")
 
     print("\nTop 10 candidate locations:")
