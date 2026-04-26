@@ -714,10 +714,6 @@ def build_map(scored, known_sites):
       if (document.getElementById('panel').classList.contains('open')) {
         renderNearest(lat, lon);
       }
-
-      // Update button
-      var btn = document.getElementById('gps-btn');
-      if (btn) btn.innerHTML = '📍 Live · ' + lat.toFixed(4) + ', ' + lon.toFixed(4);
     }
 
     function gpsError() {
@@ -751,10 +747,9 @@ def build_map(scored, known_sites):
 
     <div style="position:fixed;bottom:30px;right:10px;z-index:1000">
       <button id="gps-btn" onclick="toggleTracking()" style="background:#2196F3;color:white;border:none;
-        padding:14px 18px;border-radius:28px;font-size:14px;cursor:pointer;
-        box-shadow:2px 2px 10px rgba(0,0,0,0.4);font-weight:600;max-width:260px;
-        white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
-        📍 Start GPS tracking
+        padding:14px 18px;border-radius:50%;font-size:22px;cursor:pointer;width:54px;height:54px;
+        box-shadow:2px 2px 10px rgba(0,0,0,0.4)">
+        📍
       </button>
     </div>
     """
