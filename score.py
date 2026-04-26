@@ -144,6 +144,13 @@ MANUAL_KNOWN_SITES = [
         "note": "Rock paintings at Viherinkoski.",
         "elev_above_water": 3,
     },
+    {
+        "name": "Hahlavuori",
+        "lon": 26.4559, "lat": 61.8306,
+        "access": "mixed",
+        "note": "Rock painting at Hahlavuori.",
+        "elev_above_water": 3,
+    },
 ]
 
 
