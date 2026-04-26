@@ -685,17 +685,7 @@ def build_map(scored, known_sites):
     </div>
     """
 
-    title_html = """
-    <div style="position:fixed;top:10px;left:60px;z-index:1000;background:white;
-                padding:10px;border-radius:8px;font-family:sans-serif;font-size:13px;
-                box-shadow:2px 2px 6px rgba(0,0,0,0.3);max-width:260px">
-      <b>🪨 Rock Art Finder — Central Finland</b><br>
-      <span style="color:red">●</span> Known sites &nbsp;
-      <span style="color:orange">●</span> Candidates<br>
-      <small>Heatmap = likelihood score<br>
-      Elevation + cliff aspect + proximity</small>
-    </div>
-    """
+    title_html = ""
     pwa_head = """
     <link rel="manifest" href="manifest.json">
     <meta name="mobile-web-app-capable" content="yes">
