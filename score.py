@@ -601,8 +601,9 @@ def build_map(scored, known_sites):
     map_name = m.get_name()
     candidates_json = json.dumps([
         {"lat": r["lat"], "lon": r["lon"], "score": r["score"],
-         "elevation": r.get("elevation")}
-        for r in sorted(scored, key=lambda x: x["score"], reverse=True)[:200]
+         "elevation": r.get("elevation"), "above_lake": r.get("above_lake"),
+         "portage": r.get("portage_score", 0)}
+        for r in sorted(scored, key=lambda x: x["score"], reverse=True)[:500]
     ])
 
     gps_js = """
@@ -672,7 +673,10 @@ def build_map(scored, known_sites):
         html += '<div class="crow" onclick="focusCandidate(' + c.lat + ',' + c.lon + ')">';
         html += '<div class="crank">' + (i+1) + '</div>';
         html += '<div class="cinfo">';
-        html += '<div class="cdist">' + c.dist.toFixed(1) + ' km &nbsp;' + label + ' ' + pct + '%' + (elev ? ' · ' + elev : '') + '</div>';
+        var above = c.above_lake != null ? c.above_lake.toFixed(0) + 'm above lake' : '';
+        var portage = c.portage > 0.4 ? ' · portage corridor' : '';
+        html += '<div class="cdist">' + c.dist.toFixed(1) + ' km &nbsp;' + label + ' ' + pct + '%' + '</div>';
+        html += '<div class="cmeta">' + (elev ? elev + ' asl' : '') + (above ? ' · ' + above : '') + portage + '</div>';
         html += '<a class="cgmaps" href="' + gmaps + '" target="_blank" onclick="event.stopPropagation()">📍 Google Maps</a> ';
         html += '<a class="cgmaps" href="' + retki + '" target="_blank" onclick="event.stopPropagation()">🥾 Retkikartta</a>';
         html += '</div></div>';
