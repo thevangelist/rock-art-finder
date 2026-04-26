@@ -550,8 +550,7 @@ def build_map(scored, known_sites):
                 f"Proximity: {r['prox_score']:.2f} · Approach: {r.get('approach_score',0):.2f}<br>"
                 f"Portage corridor: {r.get('portage_score',0):.2f}<br><br>"
                 f"<a href='https://www.google.com/maps?q={r['lat']:.5f},{r['lon']:.5f}' target='_blank'>📍 Google Maps</a><br>"
-                f"<a href='https://www.retkikartta.fi/?lat={r['lat']:.5f}&lng={r['lon']:.5f}&zoom=15' target='_blank'>🥾 Retkikartta</a><br>"
-                f"<a href='https://asiointi.maanmittauslaitos.fi/karttapaikka/?lang=fi&share=customMarker&n={r['lat']:.5f}&e={r['lon']:.5f}&zoom=8' target='_blank'>🗺️ MML Maastokartta</a>",
+                f"<a href='https://www.retkikartta.fi/?lat={r['lat']:.5f}&lng={r['lon']:.5f}&zoom=15' target='_blank'>🥾 Retkikartta</a>",
                 max_width=220,
             ),
         ).add_to(candidate_group)
@@ -649,14 +648,12 @@ def build_map(scored, known_sites):
         var elev = c.elevation ? c.elevation.toFixed(0) + 'm' : '';
         var gmaps = 'https://maps.google.com/?q=' + c.lat.toFixed(5) + ',' + c.lon.toFixed(5);
         var retki = 'https://www.retkikartta.fi/?lat=' + c.lat.toFixed(5) + '&lng=' + c.lon.toFixed(5) + '&zoom=15';
-        var mml = 'https://asiointi.maanmittauslaitos.fi/karttapaikka/?lang=fi&share=customMarker&n=' + c.lat.toFixed(5) + '&e=' + c.lon.toFixed(5) + '&zoom=8';
         html += '<div class="crow" onclick="focusCandidate(' + c.lat + ',' + c.lon + ')">';
         html += '<div class="crank">' + (i+1) + '</div>';
         html += '<div class="cinfo">';
         html += '<div class="cdist">' + c.dist.toFixed(1) + ' km &nbsp;' + label + ' ' + pct + '%' + (elev ? ' · ' + elev : '') + '</div>';
         html += '<a class="cgmaps" href="' + gmaps + '" target="_blank" onclick="event.stopPropagation()">📍 Google Maps</a> ';
-        html += '<a class="cgmaps" href="' + retki + '" target="_blank" onclick="event.stopPropagation()">🥾 Retkikartta</a> ';
-        html += '<a class="cgmaps" href="' + mml + '" target="_blank" onclick="event.stopPropagation()">🗺️ Maastokartta</a>';
+        html += '<a class="cgmaps" href="' + retki + '" target="_blank" onclick="event.stopPropagation()">🥾 Retkikartta</a>';
         html += '</div></div>';
       });
       document.getElementById('panel-list').innerHTML = html;
