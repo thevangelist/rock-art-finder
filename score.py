@@ -459,9 +459,10 @@ def build_map(scored, known_sites):
     ).add_to(m)
 
     # Heatmap of candidate scores
-    heat_data = [[r["lat"], r["lon"], r["score"]] for r in scored if r["score"] > 0.4]
-    HeatMap(heat_data, radius=18, blur=20, min_opacity=0.3,
-            gradient={0.4: "blue", 0.65: "lime", 0.8: "yellow", 1.0: "red"},
+    heat_data = [[r["lat"], r["lon"], r["score"]] for r in scored if r["score"] > 0.05]
+    print(f"  Heatmap points: {len(heat_data)}")
+    HeatMap(heat_data, radius=15, blur=25, min_opacity=0.05, max_opacity=0.45,
+            gradient={0.0: "blue", 0.5: "lime", 0.75: "yellow", 1.0: "red"},
             name="Likelihood heatmap").add_to(m)
 
     # Top candidates as markers
@@ -485,7 +486,7 @@ def build_map(scored, known_sites):
                 f"Approach: {r.get('approach_score', 0):.2f}<br>"
                 f"Route bonus: {r.get('route_bonus', 0):.2f}<br><br>"
                 f"<a href='https://www.google.com/maps?q={r['lat']:.5f},{r['lon']:.5f}' "
-                f"target='_blank'>📍 Avaa Google Mapsissa</a>",
+                f"target='_blank'>📍 Open in Google Maps</a>",
                 max_width=220,
             ),
         ).add_to(candidate_group)
@@ -516,7 +517,7 @@ def build_map(scored, known_sites):
     gps_js = """
     <script>
     function findNearest() {
-        if (!navigator.geolocation) { alert('Geolocation ei tuettu'); return; }
+        if (!navigator.geolocation) { alert('Geolocation not supported'); return; }
         navigator.geolocation.getCurrentPosition(function(pos) {
             var lat = pos.coords.latitude;
             var lon = pos.coords.longitude;
@@ -533,7 +534,7 @@ def build_map(scored, known_sites):
             });
             dists.sort(function(a,b){ return a.dist - b.dist; });
             var nearest = dists.slice(0,5);
-            var msg = 'Lähimmät kohteet:\\n\\n';
+            var msg = 'Nearest candidates:\\n\\n';
             nearest.forEach(function(c, i) {
                 msg += (i+1) + '. ' + c.dist.toFixed(1) + ' km — score ' + c.score.toFixed(2);
                 if(c.elevation) msg += ' (' + c.elevation.toFixed(0) + 'm)';
@@ -544,7 +545,7 @@ def build_map(scored, known_sites):
             // also show your location on map
             L.marker([lat, lon], {
                 icon: L.divIcon({html:'<div style="background:blue;width:14px;height:14px;border-radius:50%;border:2px solid white"></div>', iconSize:[14,14]})
-            }).addTo(map_""" + m.get_name() + """).bindPopup('Sijaintisi').openPopup();
+            }).addTo(map_""" + m.get_name() + """).bindPopup('Your location').openPopup();
             map_""" + m.get_name() + """.setView([lat, lon], 13);
         }, function(e){ alert('Sijaintia ei saatu: ' + e.message); });
     }
@@ -553,7 +554,7 @@ def build_map(scored, known_sites):
       <button onclick="findNearest()" style="background:#2196F3;color:white;border:none;
         padding:12px 18px;border-radius:25px;font-size:15px;cursor:pointer;
         box-shadow:2px 2px 8px rgba(0,0,0,0.4)">
-        📍 Lähimmät kohteet
+        📍 Nearest candidates
       </button>
     </div>
     """
@@ -563,10 +564,10 @@ def build_map(scored, known_sites):
                 padding:10px;border-radius:8px;font-family:sans-serif;font-size:13px;
                 box-shadow:2px 2px 6px rgba(0,0,0,0.3);max-width:260px">
       <b>🪨 Rock Art Finder — Central Finland</b><br>
-      <span style="color:red">●</span> Tunnetut kohteet &nbsp;
-      <span style="color:orange">●</span> Kandidaatit<br>
-      <small>Heatmap = todennäköisyys<br>
-      Korkeus + kalliosuunta + etäisyys</small>
+      <span style="color:red">●</span> Known sites &nbsp;
+      <span style="color:orange">●</span> Candidates<br>
+      <small>Heatmap = likelihood score<br>
+      Elevation + cliff aspect + proximity</small>
     </div>
     """
     m.get_root().html.add_child(folium.Element(title_html))
