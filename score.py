@@ -492,10 +492,9 @@ def build_map(scored, known_sites):
     center_lat = (BBOX["min_lat"] + BBOX["max_lat"]) / 2
     center_lon = (BBOX["min_lon"] + BBOX["max_lon"]) / 2
 
-    m = folium.Map(location=[center_lat, center_lon], zoom_start=10,
-                   tiles="OpenStreetMap")
+    m = folium.Map(location=[center_lat, center_lon], zoom_start=10, tiles=None)
 
-    # Add a satellite layer option
+    folium.TileLayer("OpenStreetMap", name="OpenStreetMap", control=True).add_to(m)
     folium.TileLayer(
         tiles="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
         attr="Esri",
