@@ -130,6 +130,13 @@ MANUAL_KNOWN_SITES = [
         "note": "Rock painting site.",
         "elev_above_water": 5,
     },
+    {
+        "name": "Avosaari (Päijänne)",
+        "lon": 25.6913, "lat": 61.7253,
+        "access": "boat",
+        "note": "Rock painting on Avosaari island, Päijänne.",
+        "elev_above_water": 3,
+    },
 ]
 
 
