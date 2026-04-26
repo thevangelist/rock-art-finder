@@ -500,6 +500,13 @@ def build_map(scored, known_sites):
         overlay=False,
         control=True,
     ).add_to(m)
+    folium.TileLayer(
+        tiles="https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",
+        attr="OpenTopoMap",
+        name="Elevation (OpenTopoMap)",
+        overlay=False,
+        control=True,
+    ).add_to(m)
 
     # Heatmap of candidate scores
     heat_data = [[r["lat"], r["lon"], r["score"]] for r in scored if r["score"] > 0.55]
