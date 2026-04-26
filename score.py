@@ -87,14 +87,14 @@ MANUAL_KNOWN_SITES = [
         "name": "Toussunlinna (Laukaa / Hankavesi)",
         "lon": 26.2413, "lat": 62.4332,
         "access": "boat",
-        "note": "Vertical cliff face rising straight from lake. Elk figure. Practically inaccessible except by water.",
+        "note": "West shore of a long narrow south-facing bay on Hankavesi. Painting (~100×120cm) at the base of a cliff that drops straight into the water, above a rock hollow. Figures: a bent-knee human left, colour traces of deer right, small headless animal at the bottom, a long-necked animal above, and an unidentified mark above a crack. Inaccessible except by boat.",
         "elev_above_water": 5,
     },
     {
         "name": "Pyhänpää (Päijänne south)",
         "lon": 25.4745, "lat": 61.6418,
         "access": "mixed",
-        "note": "Multiple painting groups on southern Päijänne shore. Paintings notably high above current water.",
+        "note": "Shore cliff rising from Päijänne with a wide ledge. Two painting panels above the ledge. Left panel: large outline elk with two boat figures above (lower boat forms a crown over the elk's head), human figure over the hindlegs, and two large X-marks at top. Right panel (~10m right): stronger colour but worn, no clear figures. Paintings notably high above current water level.",
         "elev_above_water": 15,
     },
     {
