@@ -534,9 +534,10 @@ def build_map(scored, known_sites):
     candidate_group = folium.FeatureGroup(name="Top 30 candidates")
     for r in top:
         elev_str = f"{r['elevation']:.0f}m" if r['elevation'] else "?"
+        marker_radius = 4 + int(r["score"] * 10)   # 4–14px based on score
         folium.CircleMarker(
             location=[r["lat"], r["lon"]],
-            radius=8,
+            radius=marker_radius,
             color="orange",
             fill=True,
             fill_opacity=0.7,
