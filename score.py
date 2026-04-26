@@ -31,7 +31,7 @@ warnings.filterwarnings("ignore")
 # ── Study area (Central Finland / Jyväskylä–Hankasalmi–Konnevesi) ────────────
 BBOX = {
     "min_lon": 25.3,
-    "max_lon": 26.8,
+    "max_lon": 28.0,
     "min_lat": 61.55,
     "max_lat": 62.65,
 }
@@ -56,6 +56,8 @@ LAKE_SURFACES = [
     {"name": "Keitele",     "elev": 99.0, "lat": 62.70, "lon": 26.20, "radius_km": 25},
     {"name": "Kynsivesi",   "elev": 82.0, "lat": 62.30, "lon": 26.10, "radius_km": 10},
     {"name": "Leppävesi",   "elev": 82.0, "lat": 62.37, "lon": 25.85, "radius_km": 8},
+    {"name": "Suvasvesi",   "elev": 76.6, "lat": 62.45, "lon": 27.80, "radius_km": 20},
+    {"name": "Juojärvi",    "elev": 77.0, "lat": 62.20, "lon": 28.00, "radius_km": 15},
 ]
 
 CLUSTER_RADIUS_KM = 20.0   # km — distance within which proximity bonus applies
@@ -71,14 +73,14 @@ MANUAL_KNOWN_SITES = [
         "name": "Saraakallio I (Laukaa)",
         "lon": 25.9973, "lat": 62.4176,
         "access": "boat",
-        "note": "One of Fennoscandia's largest rock art complexes. Hundreds of figures spanning thousands of years.",
+        "note": "One of Finland's three major rock art sites and the largest painted surface in Scandinavia. Dozens of figures including elk, boats, humans and handprints spread across a wide terrace wall. Faces the lake, accessible only by water.",
         "elev_above_water": 2,
     },
     {
         "name": "Saraakallio II (Laukaa)",
         "lon": 25.9920, "lat": 62.4195,
         "access": "boat",
-        "note": "Secondary site ~300m from Saraakallio I on Saraavesi shore.",
+        "note": "~200m southeast of Saraakallio I. Low cliff set back ~40m from shore, partially hidden by trees. Figures badly weathered: two human figures in upper left corner, four overlapping animal figures to the right, fragmentary colour traces below. Accessible by water.",
         "elev_above_water": 2,
     },
     {
@@ -149,6 +151,13 @@ MANUAL_KNOWN_SITES = [
         "lon": 26.4559, "lat": 61.8306,
         "access": "mixed",
         "note": "Rock painting at Hahlavuori.",
+        "elev_above_water": 3,
+    },
+    {
+        "name": "Karhuvuori",
+        "lon": 27.8543, "lat": 62.4130,
+        "access": "mixed",
+        "note": "Rock painting at Karhuvuori.",
         "elev_above_water": 3,
     },
 ]
