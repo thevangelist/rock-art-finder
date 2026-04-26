@@ -430,23 +430,21 @@ def score_grid(grid, known_sites, elevations, slopes=None, aspects=None):
     # carry route between water bodies (Halsvuori pattern).
     # For each grid point: find distance to each lake, take two closest *different*
     # lake systems (by name), score by sum of closeness.
-    PORTAGE_MAX_KM = 8.0   # must be within this of each lake to count
-    lake_dists_km = np.stack([
-        vec_haversine(ll, lo, lats, lons)
-        for ll, lo in zip(lake_lats, lake_lons)
-    ], axis=1)   # shape (N, n_lakes)
-    # Sort distances per point, take closest and 2nd closest lake distances
-    sorted_dists = np.sort(lake_dists_km, axis=1)
-    d1 = sorted_dists[:, 0]   # closest lake
-    d2 = sorted_dists[:, 1]   # 2nd closest (different lake)
+    # Distance to lake *edge* (not center) — subtract each lake's radius
+    PORTAGE_MAX_KM = 6.0   # must be within this of each lake edge to count
+    lake_radii = np.array([l["radius_km"] for l in LAKE_SURFACES])
+    lake_dists_to_edge = np.stack([
+        np.maximum(0.0, vec_haversine(ll, lo, lats, lons) - lake_radii[i])
+        for i, (ll, lo) in enumerate(zip(lake_lats, lake_lons))
+    ], axis=1)   # shape (N, n_lakes) — 0 means inside the lake
+    sorted_edge_dists = np.sort(lake_dists_to_edge, axis=1)
+    d1 = sorted_edge_dists[:, 0]   # closest lake edge
+    d2 = sorted_edge_dists[:, 1]   # 2nd closest lake edge
     portage_score = np.where(
-        (d1 < PORTAGE_MAX_KM) & (d2 < PORTAGE_MAX_KM),
+        (d1 < PORTAGE_MAX_KM) & (d2 < PORTAGE_MAX_KM) & (d1 > 0.2),
         (1.0 - d1 / PORTAGE_MAX_KM) * (1.0 - d2 / PORTAGE_MAX_KM),
         0.0
     )
-    # Suppress portage bonus when point is also right on a single lake shore
-    # (those are already rewarded by water route score)
-    portage_score = np.where(d1 < 1.5, portage_score * 0.3, portage_score)
 
     # ── Cliff aspect + steepness ──────────────────────────────────────────────
     if slopes is not None and aspects is not None:
