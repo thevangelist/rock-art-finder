@@ -17,7 +17,7 @@
             <meta name="viewport" content="width=device-width,
                 initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
             <style>
-                #map_323185ebdbaf21aac2a8281386714e93 {
+                #map_f47c4a40030001a423c562c44fb08954 {
                     position: relative;
                     width: 100.0%;
                     height: 100.0%;
@@ -59,21 +59,60 @@
                 padding:10px;border-radius:8px;font-family:sans-serif;font-size:13px;
                 box-shadow:2px 2px 6px rgba(0,0,0,0.3);max-width:260px">
       <b>🪨 Rock Art Finder — Central Finland</b><br>
-      <span style="color:red">●</span> Known sites &nbsp;
-      <span style="color:orange">●</span> Candidates<br>
-      <small>Heatmap = likelihood score<br>
-      Based on elevation band (~80m) + proximity to known sites</small>
+      <span style="color:red">●</span> Tunnetut kohteet &nbsp;
+      <span style="color:orange">●</span> Kandidaatit<br>
+      <small>Heatmap = todennäköisyys<br>
+      Korkeus + kalliosuunta + etäisyys</small>
     </div>
     
     
-            <div class="folium-map" id="map_323185ebdbaf21aac2a8281386714e93" ></div>
+    <script>
+    function findNearest() {
+        if (!navigator.geolocation) { alert('Geolocation ei tuettu'); return; }
+        navigator.geolocation.getCurrentPosition(function(pos) {
+            var lat = pos.coords.latitude;
+            var lon = pos.coords.longitude;
+            var candidates = [{"lat": 62.565999999999434, "lon": 26.55200000000042, "score": 0.091, "elevation": 114.0, "rank": 1}, {"lat": 61.69399999999992, "lon": 25.66000000000012, "score": 0.068, "elevation": 124.0, "rank": 2}, {"lat": 61.70199999999991, "lon": 25.668000000000124, "score": 0.065, "elevation": 146.0, "rank": 3}, {"lat": 62.581999999999425, "lon": 26.728000000000478, "score": 0.06, "elevation": 104.0, "rank": 4}, {"lat": 62.601999999999414, "lon": 25.944000000000216, "score": 0.051, "elevation": 172.0, "rank": 5}, {"lat": 61.697999999999915, "lon": 25.696000000000133, "score": 0.031, "elevation": 178.0, "rank": 6}, {"lat": 62.58599999999942, "lon": 26.728000000000478, "score": 0.029, "elevation": 128.0, "rank": 7}, {"lat": 61.697999999999915, "lon": 25.664000000000122, "score": 0.025, "elevation": 119.0, "rank": 8}, {"lat": 62.22999999999962, "lon": 25.83600000000018, "score": 0.025, "elevation": 96.0, "rank": 9}, {"lat": 62.561999999999436, "lon": 26.788000000000498, "score": 0.018, "elevation": 102.0, "rank": 10}, {"lat": 62.581999999999425, "lon": 26.70000000000047, "score": 0.016, "elevation": 182.0, "rank": 11}, {"lat": 62.11799999999968, "lon": 25.920000000000208, "score": 0.015, "elevation": 164.0, "rank": 12}, {"lat": 62.50599999999947, "lon": 26.188000000000297, "score": 0.015, "elevation": 105.0, "rank": 13}, {"lat": 61.70199999999991, "lon": 25.700000000000134, "score": 0.014, "elevation": 171.0, "rank": 14}, {"lat": 62.51399999999946, "lon": 26.76400000000049, "score": 0.013, "elevation": 118.0, "rank": 15}, {"lat": 62.25399999999961, "lon": 25.9000000000002, "score": 0.012, "elevation": 117.0, "rank": 16}, {"lat": 62.309999999999576, "lon": 25.71200000000014, "score": 0.012, "elevation": 122.0, "rank": 17}, {"lat": 62.241999999999614, "lon": 25.8960000000002, "score": 0.011, "elevation": 123.0, "rank": 18}, {"lat": 61.59799999999997, "lon": 25.588000000000097, "score": 0.01, "elevation": 130.0, "rank": 19}, {"lat": 62.51799999999946, "lon": 26.748000000000484, "score": 0.01, "elevation": 144.0, "rank": 20}, {"lat": 61.7299999999999, "lon": 25.464000000000055, "score": 0.009, "elevation": 141.0, "rank": 21}, {"lat": 61.97399999999976, "lon": 25.496000000000066, "score": 0.009, "elevation": 151.0, "rank": 22}, {"lat": 61.85799999999983, "lon": 25.71600000000014, "score": 0.008, "elevation": 125.0, "rank": 23}, {"lat": 62.55799999999944, "lon": 26.580000000000428, "score": 0.008, "elevation": 106.0, "rank": 24}, {"lat": 62.561999999999436, "lon": 26.692000000000466, "score": 0.006, "elevation": 127.0, "rank": 25}, {"lat": 61.7299999999999, "lon": 25.44800000000005, "score": 0.004, "elevation": 103.0, "rank": 26}, {"lat": 61.92999999999979, "lon": 25.700000000000134, "score": 0.004, "elevation": 133.0, "rank": 27}, {"lat": 61.933999999999784, "lon": 25.696000000000133, "score": 0.004, "elevation": 143.0, "rank": 28}, {"lat": 62.293999999999585, "lon": 25.648000000000117, "score": 0.004, "elevation": 181.0, "rank": 29}, {"lat": 61.92599999999979, "lon": 25.704000000000136, "score": 0.001, "elevation": 97.0, "rank": 30}, {"lat": 62.0899999999997, "lon": 25.740000000000148, "score": 0.001, "elevation": 137.0, "rank": 31}, {"lat": 61.55, "lon": 25.3, "score": 0.0, "elevation": 74.0, "rank": 32}, {"lat": 61.55, "lon": 25.304000000000002, "score": 0.0, "elevation": 74.0, "rank": 33}, {"lat": 61.55, "lon": 25.308000000000003, "score": 0.0, "elevation": 74.0, "rank": 34}, {"lat": 61.55, "lon": 25.312000000000005, "score": 0.0, "elevation": 74.0, "rank": 35}, {"lat": 61.55, "lon": 25.316000000000006, "score": 0.0, "elevation": 74.0, "rank": 36}, {"lat": 61.55, "lon": 25.320000000000007, "score": 0.0, "elevation": 74.0, "rank": 37}, {"lat": 61.55, "lon": 25.32400000000001, "score": 0.0, "elevation": 74.0, "rank": 38}, {"lat": 61.55, "lon": 25.32800000000001, "score": 0.0, "elevation": 74.0, "rank": 39}, {"lat": 61.55, "lon": 25.33200000000001, "score": 0.0, "elevation": 74.0, "rank": 40}, {"lat": 61.55, "lon": 25.336000000000013, "score": 0.0, "elevation": 74.0, "rank": 41}, {"lat": 61.55, "lon": 25.340000000000014, "score": 0.0, "elevation": 74.0, "rank": 42}, {"lat": 61.55, "lon": 25.344000000000015, "score": 0.0, "elevation": 74.0, "rank": 43}, {"lat": 61.55, "lon": 25.348000000000017, "score": 0.0, "elevation": 74.0, "rank": 44}, {"lat": 61.55, "lon": 25.352000000000018, "score": 0.0, "elevation": 74.0, "rank": 45}, {"lat": 61.55, "lon": 25.35600000000002, "score": 0.0, "elevation": 74.0, "rank": 46}, {"lat": 61.55, "lon": 25.36000000000002, "score": 0.0, "elevation": 74.0, "rank": 47}, {"lat": 61.55, "lon": 25.364000000000022, "score": 0.0, "elevation": 74.0, "rank": 48}, {"lat": 61.55, "lon": 25.368000000000023, "score": 0.0, "elevation": 74.0, "rank": 49}, {"lat": 61.55, "lon": 25.372000000000025, "score": 0.0, "elevation": 74.0, "rank": 50}, {"lat": 61.55, "lon": 25.376000000000026, "score": 0.0, "elevation": 74.0, "rank": 51}, {"lat": 61.55, "lon": 25.380000000000027, "score": 0.0, "elevation": 74.0, "rank": 52}, {"lat": 61.55, "lon": 25.38400000000003, "score": 0.0, "elevation": 74.0, "rank": 53}, {"lat": 61.55, "lon": 25.38800000000003, "score": 0.0, "elevation": 74.0, "rank": 54}, {"lat": 61.55, "lon": 25.39200000000003, "score": 0.0, "elevation": 74.0, "rank": 55}, {"lat": 61.55, "lon": 25.396000000000033, "score": 0.0, "elevation": 74.0, "rank": 56}, {"lat": 61.55, "lon": 25.400000000000034, "score": 0.0, "elevation": 74.0, "rank": 57}, {"lat": 61.55, "lon": 25.404000000000035, "score": 0.0, "elevation": 74.0, "rank": 58}, {"lat": 61.55, "lon": 25.408000000000037, "score": 0.0, "elevation": 74.0, "rank": 59}, {"lat": 61.55, "lon": 25.412000000000038, "score": 0.0, "elevation": 74.0, "rank": 60}, {"lat": 61.55, "lon": 25.41600000000004, "score": 0.0, "elevation": 74.0, "rank": 61}, {"lat": 61.55, "lon": 25.42000000000004, "score": 0.0, "elevation": 74.0, "rank": 62}, {"lat": 61.55, "lon": 25.424000000000042, "score": 0.0, "elevation": 74.0, "rank": 63}, {"lat": 61.55, "lon": 25.428000000000043, "score": 0.0, "elevation": 74.0, "rank": 64}, {"lat": 61.55, "lon": 25.432000000000045, "score": 0.0, "elevation": 74.0, "rank": 65}, {"lat": 61.55, "lon": 25.436000000000046, "score": 0.0, "elevation": 74.0, "rank": 66}, {"lat": 61.55, "lon": 25.440000000000047, "score": 0.0, "elevation": 74.0, "rank": 67}, {"lat": 61.55, "lon": 25.44400000000005, "score": 0.0, "elevation": 74.0, "rank": 68}, {"lat": 61.55, "lon": 25.44800000000005, "score": 0.0, "elevation": 74.0, "rank": 69}, {"lat": 61.55, "lon": 25.45200000000005, "score": 0.0, "elevation": 74.0, "rank": 70}, {"lat": 61.55, "lon": 25.456000000000053, "score": 0.0, "elevation": 74.0, "rank": 71}, {"lat": 61.55, "lon": 25.460000000000054, "score": 0.0, "elevation": 75.0, "rank": 72}, {"lat": 61.55, "lon": 25.464000000000055, "score": 0.0, "elevation": 75.0, "rank": 73}, {"lat": 61.55, "lon": 25.468000000000057, "score": 0.0, "elevation": 74.0, "rank": 74}, {"lat": 61.55, "lon": 25.472000000000058, "score": 0.0, "elevation": 74.0, "rank": 75}, {"lat": 61.55, "lon": 25.47600000000006, "score": 0.0, "elevation": 74.0, "rank": 76}, {"lat": 61.55, "lon": 25.48000000000006, "score": 0.0, "elevation": 74.0, "rank": 77}, {"lat": 61.55, "lon": 25.484000000000062, "score": 0.0, "elevation": 74.0, "rank": 78}, {"lat": 61.55, "lon": 25.488000000000063, "score": 0.0, "elevation": 74.0, "rank": 79}, {"lat": 61.55, "lon": 25.492000000000065, "score": 0.0, "elevation": 74.0, "rank": 80}, {"lat": 61.55, "lon": 25.496000000000066, "score": 0.0, "elevation": 74.0, "rank": 81}, {"lat": 61.55, "lon": 25.500000000000068, "score": 0.0, "elevation": 74.0, "rank": 82}, {"lat": 61.55, "lon": 25.50400000000007, "score": 0.0, "elevation": 83.0, "rank": 83}, {"lat": 61.55, "lon": 25.50800000000007, "score": 0.0, "elevation": 79.0, "rank": 84}, {"lat": 61.55, "lon": 25.51200000000007, "score": 0.0, "elevation": 75.0, "rank": 85}, {"lat": 61.55, "lon": 25.516000000000073, "score": 0.0, "elevation": 74.0, "rank": 86}, {"lat": 61.55, "lon": 25.520000000000074, "score": 0.0, "elevation": 74.0, "rank": 87}, {"lat": 61.55, "lon": 25.524000000000076, "score": 0.0, "elevation": 76.0, "rank": 88}, {"lat": 61.55, "lon": 25.528000000000077, "score": 0.0, "elevation": 82.0, "rank": 89}, {"lat": 61.55, "lon": 25.532000000000078, "score": 0.0, "elevation": 91.0, "rank": 90}, {"lat": 61.55, "lon": 25.53600000000008, "score": 0.0, "elevation": 89.0, "rank": 91}, {"lat": 61.55, "lon": 25.54000000000008, "score": 0.0, "elevation": 98.0, "rank": 92}, {"lat": 61.55, "lon": 25.544000000000082, "score": 0.0, "elevation": 104.0, "rank": 93}, {"lat": 61.55, "lon": 25.548000000000084, "score": 0.0, "elevation": 104.0, "rank": 94}, {"lat": 61.55, "lon": 25.552000000000085, "score": 0.0, "elevation": 85.0, "rank": 95}, {"lat": 61.55, "lon": 25.556000000000086, "score": 0.0, "elevation": 74.0, "rank": 96}, {"lat": 61.55, "lon": 25.560000000000088, "score": 0.0, "elevation": 74.0, "rank": 97}, {"lat": 61.55, "lon": 25.56400000000009, "score": 0.0, "elevation": 74.0, "rank": 98}, {"lat": 61.55, "lon": 25.56800000000009, "score": 0.0, "elevation": 74.0, "rank": 99}, {"lat": 61.55, "lon": 25.57200000000009, "score": 0.0, "elevation": 74.0, "rank": 100}, {"lat": 61.55, "lon": 25.576000000000093, "score": 0.0, "elevation": 74.0, "rank": 101}, {"lat": 61.55, "lon": 25.580000000000094, "score": 0.0, "elevation": 74.0, "rank": 102}, {"lat": 61.55, "lon": 25.584000000000096, "score": 0.0, "elevation": 84.0, "rank": 103}, {"lat": 61.55, "lon": 25.588000000000097, "score": 0.0, "elevation": 94.0, "rank": 104}, {"lat": 61.55, "lon": 25.5920000000001, "score": 0.0, "elevation": 91.0, "rank": 105}, {"lat": 61.55, "lon": 25.5960000000001, "score": 0.0, "elevation": 87.0, "rank": 106}, {"lat": 61.55, "lon": 25.6000000000001, "score": 0.0, "elevation": 92.0, "rank": 107}, {"lat": 61.55, "lon": 25.604000000000102, "score": 0.0, "elevation": 104.0, "rank": 108}, {"lat": 61.55, "lon": 25.608000000000104, "score": 0.0, "elevation": 113.0, "rank": 109}, {"lat": 61.55, "lon": 25.612000000000105, "score": 0.0, "elevation": 137.0, "rank": 110}, {"lat": 61.55, "lon": 25.616000000000106, "score": 0.0, "elevation": 142.0, "rank": 111}, {"lat": 61.55, "lon": 25.620000000000108, "score": 0.0, "elevation": 132.0, "rank": 112}, {"lat": 61.55, "lon": 25.62400000000011, "score": 0.0, "elevation": 126.0, "rank": 113}, {"lat": 61.55, "lon": 25.62800000000011, "score": 0.0, "elevation": 138.0, "rank": 114}, {"lat": 61.55, "lon": 25.63200000000011, "score": 0.0, "elevation": 125.0, "rank": 115}, {"lat": 61.55, "lon": 25.636000000000113, "score": 0.0, "elevation": 110.0, "rank": 116}, {"lat": 61.55, "lon": 25.640000000000114, "score": 0.0, "elevation": 109.0, "rank": 117}, {"lat": 61.55, "lon": 25.644000000000116, "score": 0.0, "elevation": 114.0, "rank": 118}, {"lat": 61.55, "lon": 25.648000000000117, "score": 0.0, "elevation": 103.0, "rank": 119}, {"lat": 61.55, "lon": 25.65200000000012, "score": 0.0, "elevation": 108.0, "rank": 120}, {"lat": 61.55, "lon": 25.65600000000012, "score": 0.0, "elevation": 112.0, "rank": 121}, {"lat": 61.55, "lon": 25.66000000000012, "score": 0.0, "elevation": 114.0, "rank": 122}, {"lat": 61.55, "lon": 25.664000000000122, "score": 0.0, "elevation": 114.0, "rank": 123}, {"lat": 61.55, "lon": 25.668000000000124, "score": 0.0, "elevation": 99.0, "rank": 124}, {"lat": 61.55, "lon": 25.672000000000125, "score": 0.0, "elevation": 100.0, "rank": 125}, {"lat": 61.55, "lon": 25.676000000000126, "score": 0.0, "elevation": 94.0, "rank": 126}, {"lat": 61.55, "lon": 25.680000000000128, "score": 0.0, "elevation": 88.0, "rank": 127}, {"lat": 61.55, "lon": 25.68400000000013, "score": 0.0, "elevation": 89.0, "rank": 128}, {"lat": 61.55, "lon": 25.68800000000013, "score": 0.0, "elevation": 102.0, "rank": 129}, {"lat": 61.55, "lon": 25.69200000000013, "score": 0.0, "elevation": 122.0, "rank": 130}, {"lat": 61.55, "lon": 25.696000000000133, "score": 0.0, "elevation": 130.0, "rank": 131}, {"lat": 61.55, "lon": 25.700000000000134, "score": 0.0, "elevation": 127.0, "rank": 132}, {"lat": 61.55, "lon": 25.704000000000136, "score": 0.0, "elevation": 125.0, "rank": 133}, {"lat": 61.55, "lon": 25.708000000000137, "score": 0.0, "elevation": 125.0, "rank": 134}, {"lat": 61.55, "lon": 25.71200000000014, "score": 0.0, "elevation": 122.0, "rank": 135}, {"lat": 61.55, "lon": 25.71600000000014, "score": 0.0, "elevation": 126.0, "rank": 136}, {"lat": 61.55, "lon": 25.72000000000014, "score": 0.0, "elevation": 124.0, "rank": 137}, {"lat": 61.55, "lon": 25.724000000000142, "score": 0.0, "elevation": 118.0, "rank": 138}, {"lat": 61.55, "lon": 25.728000000000144, "score": 0.0, "elevation": 116.0, "rank": 139}, {"lat": 61.55, "lon": 25.732000000000145, "score": 0.0, "elevation": 113.0, "rank": 140}, {"lat": 61.55, "lon": 25.736000000000146, "score": 0.0, "elevation": 115.0, "rank": 141}, {"lat": 61.55, "lon": 25.740000000000148, "score": 0.0, "elevation": 102.0, "rank": 142}, {"lat": 61.55, "lon": 25.74400000000015, "score": 0.0, "elevation": 87.0, "rank": 143}, {"lat": 61.55, "lon": 25.74800000000015, "score": 0.0, "elevation": 94.0, "rank": 144}, {"lat": 61.55, "lon": 25.75200000000015, "score": 0.0, "elevation": 98.0, "rank": 145}, {"lat": 61.55, "lon": 25.756000000000153, "score": 0.0, "elevation": 88.0, "rank": 146}, {"lat": 61.55, "lon": 25.760000000000154, "score": 0.0, "elevation": 88.0, "rank": 147}, {"lat": 61.55, "lon": 25.764000000000156, "score": 0.0, "elevation": 84.0, "rank": 148}, {"lat": 61.55, "lon": 25.768000000000157, "score": 0.0, "elevation": 83.0, "rank": 149}, {"lat": 61.55, "lon": 25.77200000000016, "score": 0.0, "elevation": 85.0, "rank": 150}, {"lat": 61.55, "lon": 25.77600000000016, "score": 0.0, "elevation": 86.0, "rank": 151}, {"lat": 61.55, "lon": 25.78000000000016, "score": 0.0, "elevation": 85.0, "rank": 152}, {"lat": 61.55, "lon": 25.784000000000162, "score": 0.0, "elevation": 94.0, "rank": 153}, {"lat": 61.55, "lon": 25.788000000000164, "score": 0.0, "elevation": 104.0, "rank": 154}, {"lat": 61.55, "lon": 25.792000000000165, "score": 0.0, "elevation": 105.0, "rank": 155}, {"lat": 61.55, "lon": 25.796000000000166, "score": 0.0, "elevation": 96.0, "rank": 156}, {"lat": 61.55, "lon": 25.800000000000168, "score": 0.0, "elevation": 87.0, "rank": 157}, {"lat": 61.55, "lon": 25.80400000000017, "score": 0.0, "elevation": 86.0, "rank": 158}, {"lat": 61.55, "lon": 25.80800000000017, "score": 0.0, "elevation": 86.0, "rank": 159}, {"lat": 61.55, "lon": 25.81200000000017, "score": 0.0, "elevation": 90.0, "rank": 160}, {"lat": 61.55, "lon": 25.816000000000173, "score": 0.0, "elevation": 99.0, "rank": 161}, {"lat": 61.55, "lon": 25.820000000000174, "score": 0.0, "elevation": 114.0, "rank": 162}, {"lat": 61.55, "lon": 25.824000000000176, "score": 0.0, "elevation": 121.0, "rank": 163}, {"lat": 61.55, "lon": 25.828000000000177, "score": 0.0, "elevation": 121.0, "rank": 164}, {"lat": 61.55, "lon": 25.83200000000018, "score": 0.0, "elevation": 114.0, "rank": 165}, {"lat": 61.55, "lon": 25.83600000000018, "score": 0.0, "elevation": 100.0, "rank": 166}, {"lat": 61.55, "lon": 25.84000000000018, "score": 0.0, "elevation": 88.0, "rank": 167}, {"lat": 61.55, "lon": 25.844000000000182, "score": 0.0, "elevation": 88.0, "rank": 168}, {"lat": 61.55, "lon": 25.848000000000184, "score": 0.0, "elevation": 91.0, "rank": 169}, {"lat": 61.55, "lon": 25.852000000000185, "score": 0.0, "elevation": 94.0, "rank": 170}, {"lat": 61.55, "lon": 25.856000000000186, "score": 0.0, "elevation": 100.0, "rank": 171}, {"lat": 61.55, "lon": 25.860000000000188, "score": 0.0, "elevation": 108.0, "rank": 172}, {"lat": 61.55, "lon": 25.86400000000019, "score": 0.0, "elevation": 109.0, "rank": 173}, {"lat": 61.55, "lon": 25.86800000000019, "score": 0.0, "elevation": 108.0, "rank": 174}, {"lat": 61.55, "lon": 25.87200000000019, "score": 0.0, "elevation": 102.0, "rank": 175}, {"lat": 61.55, "lon": 25.876000000000193, "score": 0.0, "elevation": 101.0, "rank": 176}, {"lat": 61.55, "lon": 25.880000000000194, "score": 0.0, "elevation": 96.0, "rank": 177}, {"lat": 61.55, "lon": 25.884000000000196, "score": 0.0, "elevation": 101.0, "rank": 178}, {"lat": 61.55, "lon": 25.888000000000197, "score": 0.0, "elevation": 108.0, "rank": 179}, {"lat": 61.55, "lon": 25.8920000000002, "score": 0.0, "elevation": 102.0, "rank": 180}, {"lat": 61.55, "lon": 25.8960000000002, "score": 0.0, "elevation": 101.0, "rank": 181}, {"lat": 61.55, "lon": 25.9000000000002, "score": 0.0, "elevation": 111.0, "rank": 182}, {"lat": 61.55, "lon": 25.904000000000202, "score": 0.0, "elevation": 121.0, "rank": 183}, {"lat": 61.55, "lon": 25.908000000000204, "score": 0.0, "elevation": 112.0, "rank": 184}, {"lat": 61.55, "lon": 25.912000000000205, "score": 0.0, "elevation": 101.0, "rank": 185}, {"lat": 61.55, "lon": 25.916000000000206, "score": 0.0, "elevation": 98.0, "rank": 186}, {"lat": 61.55, "lon": 25.920000000000208, "score": 0.0, "elevation": 96.0, "rank": 187}, {"lat": 61.55, "lon": 25.92400000000021, "score": 0.0, "elevation": 101.0, "rank": 188}, {"lat": 61.55, "lon": 25.92800000000021, "score": 0.0, "elevation": 100.0, "rank": 189}, {"lat": 61.55, "lon": 25.93200000000021, "score": 0.0, "elevation": 99.0, "rank": 190}, {"lat": 61.55, "lon": 25.936000000000213, "score": 0.0, "elevation": 99.0, "rank": 191}, {"lat": 61.55, "lon": 25.940000000000214, "score": 0.0, "elevation": 98.0, "rank": 192}, {"lat": 61.55, "lon": 25.944000000000216, "score": 0.0, "elevation": 99.0, "rank": 193}, {"lat": 61.55, "lon": 25.948000000000217, "score": 0.0, "elevation": 99.0, "rank": 194}, {"lat": 61.55, "lon": 25.95200000000022, "score": 0.0, "elevation": 99.0, "rank": 195}, {"lat": 61.55, "lon": 25.95600000000022, "score": 0.0, "elevation": 105.0, "rank": 196}, {"lat": 61.55, "lon": 25.96000000000022, "score": 0.0, "elevation": 102.0, "rank": 197}, {"lat": 61.55, "lon": 25.964000000000222, "score": 0.0, "elevation": 104.0, "rank": 198}, {"lat": 61.55, "lon": 25.968000000000224, "score": 0.0, "elevation": 109.0, "rank": 199}, {"lat": 61.55, "lon": 25.972000000000225, "score": 0.0, "elevation": 113.0, "rank": 200}];
+            // find 5 nearest
+            var dists = candidates.map(function(c) {
+                var dlat = c.lat - lat, dlon = c.lon - lon;
+                return Object.assign({}, c, {dist: Math.sqrt(dlat*dlat + dlon*dlon) * 111});
+            });
+            dists.sort(function(a,b){ return a.dist - b.dist; });
+            var nearest = dists.slice(0,5);
+            var msg = 'Lähimmät kohteet:\n\n';
+            nearest.forEach(function(c, i) {
+                msg += (i+1) + '. ' + c.dist.toFixed(1) + ' km — score ' + c.score.toFixed(2);
+                if(c.elevation) msg += ' (' + c.elevation.toFixed(0) + 'm)';
+                msg += '\nhttps://maps.google.com/?q=' + c.lat.toFixed(5) + ',' + c.lon.toFixed(5);
+                msg += '\n\n';
+            });
+            alert(msg);
+            // also show your location on map
+            L.marker([lat, lon], {
+                icon: L.divIcon({html:'<div style="background:blue;width:14px;height:14px;border-radius:50%;border:2px solid white"></div>', iconSize:[14,14]})
+            }).addTo(map_map_f47c4a40030001a423c562c44fb08954).bindPopup('Sijaintisi').openPopup();
+            map_map_f47c4a40030001a423c562c44fb08954.setView([lat, lon], 13);
+        }, function(e){ alert('Sijaintia ei saatu: ' + e.message); });
+    }
+    </script>
+    <div style="position:fixed;bottom:30px;right:10px;z-index:1000">
+      <button onclick="findNearest()" style="background:#2196F3;color:white;border:none;
+        padding:12px 18px;border-radius:25px;font-size:15px;cursor:pointer;
+        box-shadow:2px 2px 8px rgba(0,0,0,0.4)">
+        📍 Lähimmät kohteet
+      </button>
+    </div>
+    
+    
+            <div class="folium-map" id="map_f47c4a40030001a423c562c44fb08954" ></div>
         
 </body>
 <script>
     
     
-            var map_323185ebdbaf21aac2a8281386714e93 = L.map(
-                "map_323185ebdbaf21aac2a8281386714e93",
+            var map_f47c4a40030001a423c562c44fb08954 = L.map(
+                "map_f47c4a40030001a423c562c44fb08954",
                 {
                     center: [62.099999999999994, 26.05],
                     crs: L.CRS.EPSG3857,
@@ -90,7 +129,7 @@
 
         
     
-            var tile_layer_4e6a0cfebffc82fc24adf3e8aa1cf94d = L.tileLayer(
+            var tile_layer_d4bf9d81ec97d3675bf1f706eca84ad0 = L.tileLayer(
                 "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
                 {
   "minZoom": 0,
@@ -107,10 +146,10 @@
             );
         
     
-            tile_layer_4e6a0cfebffc82fc24adf3e8aa1cf94d.addTo(map_323185ebdbaf21aac2a8281386714e93);
+            tile_layer_d4bf9d81ec97d3675bf1f706eca84ad0.addTo(map_f47c4a40030001a423c562c44fb08954);
         
     
-            var tile_layer_f3b107659e8d62314c6953a20032532a = L.tileLayer(
+            var tile_layer_aa6adc4c5fdc52001eb6f760121b2443 = L.tileLayer(
                 "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
                 {
   "minZoom": 0,
@@ -127,10 +166,10 @@
             );
         
     
-            tile_layer_f3b107659e8d62314c6953a20032532a.addTo(map_323185ebdbaf21aac2a8281386714e93);
+            tile_layer_aa6adc4c5fdc52001eb6f760121b2443.addTo(map_f47c4a40030001a423c562c44fb08954);
         
     
-            var heat_map_6c0af2b041980b9834a90380b4dc70d2 = L.heatLayer(
+            var heat_map_931d08dd596451ec59c09ea638bc02d1 = L.heatLayer(
                 [],
                 {
   "minOpacity": 0.3,
@@ -147,944 +186,944 @@
             );
         
     
-            heat_map_6c0af2b041980b9834a90380b4dc70d2.addTo(map_323185ebdbaf21aac2a8281386714e93);
+            heat_map_931d08dd596451ec59c09ea638bc02d1.addTo(map_f47c4a40030001a423c562c44fb08954);
         
     
-            var feature_group_b0987627b200f3447d3fb5f9725c38a8 = L.featureGroup(
+            var feature_group_a56c8acade035f07b582245aa5df7f0b = L.featureGroup(
                 {
 }
             );
         
     
-            var circle_marker_feb40937fc0ebb049562211e3dbef034 = L.circleMarker(
+            var circle_marker_4daab9b7877356029d9b63c0855f99c2 = L.circleMarker(
                 [62.565999999999434, 26.55200000000042],
                 {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8, "stroke": true, "weight": 3}
-            ).addTo(feature_group_b0987627b200f3447d3fb5f9725c38a8);
+            ).addTo(feature_group_a56c8acade035f07b582245aa5df7f0b);
         
     
-        var popup_31663e1316bd8b52a60e51412d1dd0ec = L.popup({
-  "maxWidth": 200,
+        var popup_cd4cecc5caed5c06500570eeb95893ef = L.popup({
+  "maxWidth": 220,
 });
 
         
             
-                var html_7448719e4f49b94d0b610c8ced07e65a = $(`<div id="html_7448719e4f49b94d0b610c8ced07e65a" style="width: 100.0%; height: 100.0%;"><b>Candidate</b><br>Score: 0.09<br>Elevation: 114m<br>Elev score: 0.38<br>Cliff (steep+facing): 0.13<br>Prox score: 0.20<br>Approach: 0.09<br>Route bonus: 0.15</div>`)[0];
-                popup_31663e1316bd8b52a60e51412d1dd0ec.setContent(html_7448719e4f49b94d0b610c8ced07e65a);
+                var html_5cf99010d2396ec009a113bf3e7de568 = $(`<div id="html_5cf99010d2396ec009a113bf3e7de568" style="width: 100.0%; height: 100.0%;"><b>Candidate #1</b><br>Score: 0.09<br>Elevation: 114m<br>Elev score: 0.38<br>Cliff (steep+facing): 0.13<br>Prox score: 0.20<br>Approach: 0.09<br>Route bonus: 0.15<br><br><a href='https://www.google.com/maps?q=62.56600,26.55200' target='_blank'>📍 Avaa Google Mapsissa</a></div>`)[0];
+                popup_cd4cecc5caed5c06500570eeb95893ef.setContent(html_5cf99010d2396ec009a113bf3e7de568);
             
         
 
-        circle_marker_feb40937fc0ebb049562211e3dbef034.bindPopup(popup_31663e1316bd8b52a60e51412d1dd0ec)
+        circle_marker_4daab9b7877356029d9b63c0855f99c2.bindPopup(popup_cd4cecc5caed5c06500570eeb95893ef)
         ;
 
         
     
     
-            var circle_marker_e80d6e217a3151fe7aa1069749ee9d1c = L.circleMarker(
+            var circle_marker_435c6e848d7964915ad049f0b794eded = L.circleMarker(
                 [61.69399999999992, 25.66000000000012],
                 {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8, "stroke": true, "weight": 3}
-            ).addTo(feature_group_b0987627b200f3447d3fb5f9725c38a8);
+            ).addTo(feature_group_a56c8acade035f07b582245aa5df7f0b);
         
     
-        var popup_353b6a2cbfc41d703b8abc4dad7940e5 = L.popup({
-  "maxWidth": 200,
+        var popup_0eeec42feee57fece3d6a192cc05daec = L.popup({
+  "maxWidth": 220,
 });
 
         
             
-                var html_1e1b3fc027e41a02d945d8a93640d8db = $(`<div id="html_1e1b3fc027e41a02d945d8a93640d8db" style="width: 100.0%; height: 100.0%;"><b>Candidate</b><br>Score: 0.07<br>Elevation: 124m<br>Elev score: 0.00<br>Cliff (steep+facing): 0.09<br>Prox score: 0.77<br>Approach: 0.02<br>Route bonus: 0.00</div>`)[0];
-                popup_353b6a2cbfc41d703b8abc4dad7940e5.setContent(html_1e1b3fc027e41a02d945d8a93640d8db);
+                var html_49fb1c28968ed02f039584a1d477e276 = $(`<div id="html_49fb1c28968ed02f039584a1d477e276" style="width: 100.0%; height: 100.0%;"><b>Candidate #2</b><br>Score: 0.07<br>Elevation: 124m<br>Elev score: 0.00<br>Cliff (steep+facing): 0.09<br>Prox score: 0.77<br>Approach: 0.02<br>Route bonus: 0.00<br><br><a href='https://www.google.com/maps?q=61.69400,25.66000' target='_blank'>📍 Avaa Google Mapsissa</a></div>`)[0];
+                popup_0eeec42feee57fece3d6a192cc05daec.setContent(html_49fb1c28968ed02f039584a1d477e276);
             
         
 
-        circle_marker_e80d6e217a3151fe7aa1069749ee9d1c.bindPopup(popup_353b6a2cbfc41d703b8abc4dad7940e5)
+        circle_marker_435c6e848d7964915ad049f0b794eded.bindPopup(popup_0eeec42feee57fece3d6a192cc05daec)
         ;
 
         
     
     
-            var circle_marker_0fe14f9d879e6b4826b7f4a871b4dd46 = L.circleMarker(
+            var circle_marker_7bb3e51d152f6f238347e5eb147c9626 = L.circleMarker(
                 [61.70199999999991, 25.668000000000124],
                 {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8, "stroke": true, "weight": 3}
-            ).addTo(feature_group_b0987627b200f3447d3fb5f9725c38a8);
+            ).addTo(feature_group_a56c8acade035f07b582245aa5df7f0b);
         
     
-        var popup_d08e8bbc02275006ea9a7c0e27549897 = L.popup({
-  "maxWidth": 200,
+        var popup_b7fff4a4c61f6697e663f8eceb36cdb4 = L.popup({
+  "maxWidth": 220,
 });
 
         
             
-                var html_e936dadf12fa5441b0f37e9fd27c9a6e = $(`<div id="html_e936dadf12fa5441b0f37e9fd27c9a6e" style="width: 100.0%; height: 100.0%;"><b>Candidate</b><br>Score: 0.07<br>Elevation: 146m<br>Elev score: 0.00<br>Cliff (steep+facing): 0.09<br>Prox score: 0.76<br>Approach: 0.01<br>Route bonus: 0.00</div>`)[0];
-                popup_d08e8bbc02275006ea9a7c0e27549897.setContent(html_e936dadf12fa5441b0f37e9fd27c9a6e);
+                var html_b922febd799b7fe0fc7c2a9892c41db9 = $(`<div id="html_b922febd799b7fe0fc7c2a9892c41db9" style="width: 100.0%; height: 100.0%;"><b>Candidate #3</b><br>Score: 0.07<br>Elevation: 146m<br>Elev score: 0.00<br>Cliff (steep+facing): 0.09<br>Prox score: 0.76<br>Approach: 0.01<br>Route bonus: 0.00<br><br><a href='https://www.google.com/maps?q=61.70200,25.66800' target='_blank'>📍 Avaa Google Mapsissa</a></div>`)[0];
+                popup_b7fff4a4c61f6697e663f8eceb36cdb4.setContent(html_b922febd799b7fe0fc7c2a9892c41db9);
             
         
 
-        circle_marker_0fe14f9d879e6b4826b7f4a871b4dd46.bindPopup(popup_d08e8bbc02275006ea9a7c0e27549897)
+        circle_marker_7bb3e51d152f6f238347e5eb147c9626.bindPopup(popup_b7fff4a4c61f6697e663f8eceb36cdb4)
         ;
 
         
     
     
-            var circle_marker_09fc89c2ea7c75681825ebfddfbf9a3d = L.circleMarker(
+            var circle_marker_4dc0a3084d47e2470d22b43538c4b882 = L.circleMarker(
                 [62.581999999999425, 26.728000000000478],
                 {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8, "stroke": true, "weight": 3}
-            ).addTo(feature_group_b0987627b200f3447d3fb5f9725c38a8);
+            ).addTo(feature_group_a56c8acade035f07b582245aa5df7f0b);
         
     
-        var popup_48e7efff789c8ad2c9c53b35dc6a783a = L.popup({
-  "maxWidth": 200,
+        var popup_87ab9a8ad9e41e66dafda17698a61954 = L.popup({
+  "maxWidth": 220,
 });
 
         
             
-                var html_960446145cb948c106cca8ef4e14e078 = $(`<div id="html_960446145cb948c106cca8ef4e14e078" style="width: 100.0%; height: 100.0%;"><b>Candidate</b><br>Score: 0.06<br>Elevation: 104m<br>Elev score: 0.97<br>Cliff (steep+facing): 0.04<br>Prox score: 0.89<br>Approach: 0.06<br>Route bonus: 0.00</div>`)[0];
-                popup_48e7efff789c8ad2c9c53b35dc6a783a.setContent(html_960446145cb948c106cca8ef4e14e078);
+                var html_a2bda52fd50d49e4fa4d7b923cc7d11f = $(`<div id="html_a2bda52fd50d49e4fa4d7b923cc7d11f" style="width: 100.0%; height: 100.0%;"><b>Candidate #4</b><br>Score: 0.06<br>Elevation: 104m<br>Elev score: 0.97<br>Cliff (steep+facing): 0.04<br>Prox score: 0.89<br>Approach: 0.06<br>Route bonus: 0.00<br><br><a href='https://www.google.com/maps?q=62.58200,26.72800' target='_blank'>📍 Avaa Google Mapsissa</a></div>`)[0];
+                popup_87ab9a8ad9e41e66dafda17698a61954.setContent(html_a2bda52fd50d49e4fa4d7b923cc7d11f);
             
         
 
-        circle_marker_09fc89c2ea7c75681825ebfddfbf9a3d.bindPopup(popup_48e7efff789c8ad2c9c53b35dc6a783a)
+        circle_marker_4dc0a3084d47e2470d22b43538c4b882.bindPopup(popup_87ab9a8ad9e41e66dafda17698a61954)
         ;
 
         
     
     
-            var circle_marker_c80998bda6ab583a533a967e022cf5d4 = L.circleMarker(
+            var circle_marker_2e0cd052aaedfdb3d282f89e960ae638 = L.circleMarker(
                 [62.601999999999414, 25.944000000000216],
                 {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8, "stroke": true, "weight": 3}
-            ).addTo(feature_group_b0987627b200f3447d3fb5f9725c38a8);
+            ).addTo(feature_group_a56c8acade035f07b582245aa5df7f0b);
         
     
-        var popup_67cb03f5124a2642f6f8df7028477160 = L.popup({
-  "maxWidth": 200,
+        var popup_7f0d18801ef14c882bd32951540c91d1 = L.popup({
+  "maxWidth": 220,
 });
 
         
             
-                var html_eb7cfe37a1fe1c442d9527b7f89eb2a7 = $(`<div id="html_eb7cfe37a1fe1c442d9527b7f89eb2a7" style="width: 100.0%; height: 100.0%;"><b>Candidate</b><br>Score: 0.05<br>Elevation: 172m<br>Elev score: 0.00<br>Cliff (steep+facing): 0.06<br>Prox score: 0.98<br>Approach: 0.03<br>Route bonus: 0.00</div>`)[0];
-                popup_67cb03f5124a2642f6f8df7028477160.setContent(html_eb7cfe37a1fe1c442d9527b7f89eb2a7);
+                var html_7ca641cf8d2206610dc437740f5e5f3d = $(`<div id="html_7ca641cf8d2206610dc437740f5e5f3d" style="width: 100.0%; height: 100.0%;"><b>Candidate #5</b><br>Score: 0.05<br>Elevation: 172m<br>Elev score: 0.00<br>Cliff (steep+facing): 0.06<br>Prox score: 0.98<br>Approach: 0.03<br>Route bonus: 0.00<br><br><a href='https://www.google.com/maps?q=62.60200,25.94400' target='_blank'>📍 Avaa Google Mapsissa</a></div>`)[0];
+                popup_7f0d18801ef14c882bd32951540c91d1.setContent(html_7ca641cf8d2206610dc437740f5e5f3d);
             
         
 
-        circle_marker_c80998bda6ab583a533a967e022cf5d4.bindPopup(popup_67cb03f5124a2642f6f8df7028477160)
+        circle_marker_2e0cd052aaedfdb3d282f89e960ae638.bindPopup(popup_7f0d18801ef14c882bd32951540c91d1)
         ;
 
         
     
     
-            var circle_marker_d294a852d85e8738d51c9c10293872b2 = L.circleMarker(
+            var circle_marker_f6b1308317a850279f8f56264a22d311 = L.circleMarker(
                 [61.697999999999915, 25.696000000000133],
                 {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8, "stroke": true, "weight": 3}
-            ).addTo(feature_group_b0987627b200f3447d3fb5f9725c38a8);
+            ).addTo(feature_group_a56c8acade035f07b582245aa5df7f0b);
         
     
-        var popup_68d93a378d5b9ae513650a343608176d = L.popup({
-  "maxWidth": 200,
+        var popup_0e840911a4af97d8961b3a71bc7aa0ea = L.popup({
+  "maxWidth": 220,
 });
 
         
             
-                var html_ac918de230f7f718a2f51c19638a446c = $(`<div id="html_ac918de230f7f718a2f51c19638a446c" style="width: 100.0%; height: 100.0%;"><b>Candidate</b><br>Score: 0.03<br>Elevation: 178m<br>Elev score: 0.00<br>Cliff (steep+facing): 0.04<br>Prox score: 0.73<br>Approach: 0.02<br>Route bonus: 0.00</div>`)[0];
-                popup_68d93a378d5b9ae513650a343608176d.setContent(html_ac918de230f7f718a2f51c19638a446c);
+                var html_2da70184fc9bc427925e088ccfdbe7f8 = $(`<div id="html_2da70184fc9bc427925e088ccfdbe7f8" style="width: 100.0%; height: 100.0%;"><b>Candidate #6</b><br>Score: 0.03<br>Elevation: 178m<br>Elev score: 0.00<br>Cliff (steep+facing): 0.04<br>Prox score: 0.73<br>Approach: 0.02<br>Route bonus: 0.00<br><br><a href='https://www.google.com/maps?q=61.69800,25.69600' target='_blank'>📍 Avaa Google Mapsissa</a></div>`)[0];
+                popup_0e840911a4af97d8961b3a71bc7aa0ea.setContent(html_2da70184fc9bc427925e088ccfdbe7f8);
             
         
 
-        circle_marker_d294a852d85e8738d51c9c10293872b2.bindPopup(popup_68d93a378d5b9ae513650a343608176d)
+        circle_marker_f6b1308317a850279f8f56264a22d311.bindPopup(popup_0e840911a4af97d8961b3a71bc7aa0ea)
         ;
 
         
     
     
-            var circle_marker_281f33d3b2a0c8b1a81d24953bde1635 = L.circleMarker(
+            var circle_marker_110a38a2e39a7ce2b6e26eda0ce8e67a = L.circleMarker(
                 [62.58599999999942, 26.728000000000478],
                 {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8, "stroke": true, "weight": 3}
-            ).addTo(feature_group_b0987627b200f3447d3fb5f9725c38a8);
+            ).addTo(feature_group_a56c8acade035f07b582245aa5df7f0b);
         
     
-        var popup_951f46073a5ac4c14e6b8e4636fe86ba = L.popup({
-  "maxWidth": 200,
+        var popup_b418223ac82fdf80e16968ff57eb7e72 = L.popup({
+  "maxWidth": 220,
 });
 
         
             
-                var html_6927fddb5592ef93cd957efd85f7dccb = $(`<div id="html_6927fddb5592ef93cd957efd85f7dccb" style="width: 100.0%; height: 100.0%;"><b>Candidate</b><br>Score: 0.03<br>Elevation: 128m<br>Elev score: 0.00<br>Cliff (steep+facing): 0.03<br>Prox score: 0.88<br>Approach: 0.14<br>Route bonus: 0.00</div>`)[0];
-                popup_951f46073a5ac4c14e6b8e4636fe86ba.setContent(html_6927fddb5592ef93cd957efd85f7dccb);
+                var html_5082277538c9c3d31c2c4a2b6b3a512c = $(`<div id="html_5082277538c9c3d31c2c4a2b6b3a512c" style="width: 100.0%; height: 100.0%;"><b>Candidate #7</b><br>Score: 0.03<br>Elevation: 128m<br>Elev score: 0.00<br>Cliff (steep+facing): 0.03<br>Prox score: 0.88<br>Approach: 0.14<br>Route bonus: 0.00<br><br><a href='https://www.google.com/maps?q=62.58600,26.72800' target='_blank'>📍 Avaa Google Mapsissa</a></div>`)[0];
+                popup_b418223ac82fdf80e16968ff57eb7e72.setContent(html_5082277538c9c3d31c2c4a2b6b3a512c);
             
         
 
-        circle_marker_281f33d3b2a0c8b1a81d24953bde1635.bindPopup(popup_951f46073a5ac4c14e6b8e4636fe86ba)
+        circle_marker_110a38a2e39a7ce2b6e26eda0ce8e67a.bindPopup(popup_b418223ac82fdf80e16968ff57eb7e72)
         ;
 
         
     
     
-            var circle_marker_9a42abf340f20982af35d03e8631b66b = L.circleMarker(
+            var circle_marker_3225c88e9b0292d9d07d492eb546e4aa = L.circleMarker(
                 [61.697999999999915, 25.664000000000122],
                 {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8, "stroke": true, "weight": 3}
-            ).addTo(feature_group_b0987627b200f3447d3fb5f9725c38a8);
+            ).addTo(feature_group_a56c8acade035f07b582245aa5df7f0b);
         
     
-        var popup_0eee8fd7f1c33a53320e0d089c25e6d0 = L.popup({
-  "maxWidth": 200,
+        var popup_153e78295c3cb600bc810d64e51a650a = L.popup({
+  "maxWidth": 220,
 });
 
         
             
-                var html_3c29f3c60bf3809f9918d547c84684f6 = $(`<div id="html_3c29f3c60bf3809f9918d547c84684f6" style="width: 100.0%; height: 100.0%;"><b>Candidate</b><br>Score: 0.03<br>Elevation: 119m<br>Elev score: 0.00<br>Cliff (steep+facing): 0.03<br>Prox score: 0.76<br>Approach: 0.01<br>Route bonus: 0.00</div>`)[0];
-                popup_0eee8fd7f1c33a53320e0d089c25e6d0.setContent(html_3c29f3c60bf3809f9918d547c84684f6);
+                var html_d94b18dfabed440dddd748cd256bec35 = $(`<div id="html_d94b18dfabed440dddd748cd256bec35" style="width: 100.0%; height: 100.0%;"><b>Candidate #8</b><br>Score: 0.03<br>Elevation: 119m<br>Elev score: 0.00<br>Cliff (steep+facing): 0.03<br>Prox score: 0.76<br>Approach: 0.01<br>Route bonus: 0.00<br><br><a href='https://www.google.com/maps?q=61.69800,25.66400' target='_blank'>📍 Avaa Google Mapsissa</a></div>`)[0];
+                popup_153e78295c3cb600bc810d64e51a650a.setContent(html_d94b18dfabed440dddd748cd256bec35);
             
         
 
-        circle_marker_9a42abf340f20982af35d03e8631b66b.bindPopup(popup_0eee8fd7f1c33a53320e0d089c25e6d0)
+        circle_marker_3225c88e9b0292d9d07d492eb546e4aa.bindPopup(popup_153e78295c3cb600bc810d64e51a650a)
         ;
 
         
     
     
-            var circle_marker_b90dbdb01ef796c894d3b40859844a77 = L.circleMarker(
+            var circle_marker_9952b2d02b16f49a44ed0204606b3f5f = L.circleMarker(
                 [62.22999999999962, 25.83600000000018],
                 {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8, "stroke": true, "weight": 3}
-            ).addTo(feature_group_b0987627b200f3447d3fb5f9725c38a8);
+            ).addTo(feature_group_a56c8acade035f07b582245aa5df7f0b);
         
     
-        var popup_083daf1aa6ec41451cddd5530ef07de2 = L.popup({
-  "maxWidth": 200,
+        var popup_3e28c993ff70d80690015b10de85c860 = L.popup({
+  "maxWidth": 220,
 });
 
         
             
-                var html_3712cb6de79f9747470f937de880fe1f = $(`<div id="html_3712cb6de79f9747470f937de880fe1f" style="width: 100.0%; height: 100.0%;"><b>Candidate</b><br>Score: 0.03<br>Elevation: 96m<br>Elev score: 0.65<br>Cliff (steep+facing): 0.02<br>Prox score: 0.69<br>Approach: 0.22<br>Route bonus: 0.00</div>`)[0];
-                popup_083daf1aa6ec41451cddd5530ef07de2.setContent(html_3712cb6de79f9747470f937de880fe1f);
+                var html_23fcbc8d0a45882d18a6324bcd6f57df = $(`<div id="html_23fcbc8d0a45882d18a6324bcd6f57df" style="width: 100.0%; height: 100.0%;"><b>Candidate #9</b><br>Score: 0.03<br>Elevation: 96m<br>Elev score: 0.65<br>Cliff (steep+facing): 0.02<br>Prox score: 0.69<br>Approach: 0.22<br>Route bonus: 0.00<br><br><a href='https://www.google.com/maps?q=62.23000,25.83600' target='_blank'>📍 Avaa Google Mapsissa</a></div>`)[0];
+                popup_3e28c993ff70d80690015b10de85c860.setContent(html_23fcbc8d0a45882d18a6324bcd6f57df);
             
         
 
-        circle_marker_b90dbdb01ef796c894d3b40859844a77.bindPopup(popup_083daf1aa6ec41451cddd5530ef07de2)
+        circle_marker_9952b2d02b16f49a44ed0204606b3f5f.bindPopup(popup_3e28c993ff70d80690015b10de85c860)
         ;
 
         
     
     
-            var circle_marker_06ac76946bb2c375e10da80b14b4f505 = L.circleMarker(
+            var circle_marker_3254b5d99a8180b285490d7204c3e220 = L.circleMarker(
                 [62.561999999999436, 26.788000000000498],
                 {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8, "stroke": true, "weight": 3}
-            ).addTo(feature_group_b0987627b200f3447d3fb5f9725c38a8);
+            ).addTo(feature_group_a56c8acade035f07b582245aa5df7f0b);
         
     
-        var popup_33aed73e755aa1ad482ae5fb1bac07f9 = L.popup({
-  "maxWidth": 200,
+        var popup_a129a0c81f3aad592cd8e0a01b6843a5 = L.popup({
+  "maxWidth": 220,
 });
 
         
             
-                var html_48870228d302bc7a0dd7719fdbda40ff = $(`<div id="html_48870228d302bc7a0dd7719fdbda40ff" style="width: 100.0%; height: 100.0%;"><b>Candidate</b><br>Score: 0.02<br>Elevation: 102m<br>Elev score: 0.81<br>Cliff (steep+facing): 0.01<br>Prox score: 0.87<br>Approach: 0.20<br>Route bonus: 0.00</div>`)[0];
-                popup_33aed73e755aa1ad482ae5fb1bac07f9.setContent(html_48870228d302bc7a0dd7719fdbda40ff);
+                var html_8b83b7113092ea1a84e417f9435757bf = $(`<div id="html_8b83b7113092ea1a84e417f9435757bf" style="width: 100.0%; height: 100.0%;"><b>Candidate #10</b><br>Score: 0.02<br>Elevation: 102m<br>Elev score: 0.81<br>Cliff (steep+facing): 0.01<br>Prox score: 0.87<br>Approach: 0.20<br>Route bonus: 0.00<br><br><a href='https://www.google.com/maps?q=62.56200,26.78800' target='_blank'>📍 Avaa Google Mapsissa</a></div>`)[0];
+                popup_a129a0c81f3aad592cd8e0a01b6843a5.setContent(html_8b83b7113092ea1a84e417f9435757bf);
             
         
 
-        circle_marker_06ac76946bb2c375e10da80b14b4f505.bindPopup(popup_33aed73e755aa1ad482ae5fb1bac07f9)
+        circle_marker_3254b5d99a8180b285490d7204c3e220.bindPopup(popup_a129a0c81f3aad592cd8e0a01b6843a5)
         ;
 
         
     
     
-            var circle_marker_4977096e8eb7f50d0209f5b7b9b6abb1 = L.circleMarker(
+            var circle_marker_ebc77128d6a64153258201ab7b23f843 = L.circleMarker(
                 [62.581999999999425, 26.70000000000047],
                 {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8, "stroke": true, "weight": 3}
-            ).addTo(feature_group_b0987627b200f3447d3fb5f9725c38a8);
+            ).addTo(feature_group_a56c8acade035f07b582245aa5df7f0b);
         
     
-        var popup_272c40f2bb475922462e195922499dd2 = L.popup({
-  "maxWidth": 200,
+        var popup_9961abdbe993aa45635266c89fd3a711 = L.popup({
+  "maxWidth": 220,
 });
 
         
             
-                var html_43d36bf875304a0d24a475c6610dceee = $(`<div id="html_43d36bf875304a0d24a475c6610dceee" style="width: 100.0%; height: 100.0%;"><b>Candidate</b><br>Score: 0.02<br>Elevation: 182m<br>Elev score: 0.00<br>Cliff (steep+facing): 0.02<br>Prox score: 0.90<br>Approach: 0.43<br>Route bonus: 0.01</div>`)[0];
-                popup_272c40f2bb475922462e195922499dd2.setContent(html_43d36bf875304a0d24a475c6610dceee);
+                var html_24c45f351e20df22ef2d0ac4b3ac4559 = $(`<div id="html_24c45f351e20df22ef2d0ac4b3ac4559" style="width: 100.0%; height: 100.0%;"><b>Candidate #11</b><br>Score: 0.02<br>Elevation: 182m<br>Elev score: 0.00<br>Cliff (steep+facing): 0.02<br>Prox score: 0.90<br>Approach: 0.43<br>Route bonus: 0.01<br><br><a href='https://www.google.com/maps?q=62.58200,26.70000' target='_blank'>📍 Avaa Google Mapsissa</a></div>`)[0];
+                popup_9961abdbe993aa45635266c89fd3a711.setContent(html_24c45f351e20df22ef2d0ac4b3ac4559);
             
         
 
-        circle_marker_4977096e8eb7f50d0209f5b7b9b6abb1.bindPopup(popup_272c40f2bb475922462e195922499dd2)
+        circle_marker_ebc77128d6a64153258201ab7b23f843.bindPopup(popup_9961abdbe993aa45635266c89fd3a711)
         ;
 
         
     
     
-            var circle_marker_7259b7ed783f8b8dcfa8c0e0b3751e07 = L.circleMarker(
+            var circle_marker_e56db0f50f25a1a47eac043a1665ec04 = L.circleMarker(
                 [62.11799999999968, 25.920000000000208],
                 {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8, "stroke": true, "weight": 3}
-            ).addTo(feature_group_b0987627b200f3447d3fb5f9725c38a8);
+            ).addTo(feature_group_a56c8acade035f07b582245aa5df7f0b);
         
     
-        var popup_3e8fe33348a06e5f223f88c6bb0d9de9 = L.popup({
-  "maxWidth": 200,
+        var popup_2c0275224fd2b60b5cdb4d902a9ff240 = L.popup({
+  "maxWidth": 220,
 });
 
         
             
-                var html_bc8b5be08abb7e86e80168d2ba10bfcd = $(`<div id="html_bc8b5be08abb7e86e80168d2ba10bfcd" style="width: 100.0%; height: 100.0%;"><b>Candidate</b><br>Score: 0.01<br>Elevation: 164m<br>Elev score: 0.00<br>Cliff (steep+facing): 0.02<br>Prox score: 0.66<br>Approach: 0.17<br>Route bonus: 0.00</div>`)[0];
-                popup_3e8fe33348a06e5f223f88c6bb0d9de9.setContent(html_bc8b5be08abb7e86e80168d2ba10bfcd);
+                var html_45d8de336764996680750bb0ad9896d4 = $(`<div id="html_45d8de336764996680750bb0ad9896d4" style="width: 100.0%; height: 100.0%;"><b>Candidate #12</b><br>Score: 0.01<br>Elevation: 164m<br>Elev score: 0.00<br>Cliff (steep+facing): 0.02<br>Prox score: 0.66<br>Approach: 0.17<br>Route bonus: 0.00<br><br><a href='https://www.google.com/maps?q=62.11800,25.92000' target='_blank'>📍 Avaa Google Mapsissa</a></div>`)[0];
+                popup_2c0275224fd2b60b5cdb4d902a9ff240.setContent(html_45d8de336764996680750bb0ad9896d4);
             
         
 
-        circle_marker_7259b7ed783f8b8dcfa8c0e0b3751e07.bindPopup(popup_3e8fe33348a06e5f223f88c6bb0d9de9)
+        circle_marker_e56db0f50f25a1a47eac043a1665ec04.bindPopup(popup_2c0275224fd2b60b5cdb4d902a9ff240)
         ;
 
         
     
     
-            var circle_marker_d393adb444fa4e8001b4caee7dd0662c = L.circleMarker(
+            var circle_marker_f5569046d5c0c5f2a8b8e7f74207a741 = L.circleMarker(
                 [62.50599999999947, 26.188000000000297],
                 {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8, "stroke": true, "weight": 3}
-            ).addTo(feature_group_b0987627b200f3447d3fb5f9725c38a8);
+            ).addTo(feature_group_a56c8acade035f07b582245aa5df7f0b);
         
     
-        var popup_64f9182c5101be88fdd2909c5f44245d = L.popup({
-  "maxWidth": 200,
+        var popup_e8b9123fadc9be6d4d048985cf9b8cc7 = L.popup({
+  "maxWidth": 220,
 });
 
         
             
-                var html_0fcea2de121d5522ea4dfbef1bb762d2 = $(`<div id="html_0fcea2de121d5522ea4dfbef1bb762d2" style="width: 100.0%; height: 100.0%;"><b>Candidate</b><br>Score: 0.01<br>Elevation: 105m<br>Elev score: 0.12<br>Cliff (steep+facing): 0.02<br>Prox score: 0.83<br>Approach: 0.09<br>Route bonus: 0.00</div>`)[0];
-                popup_64f9182c5101be88fdd2909c5f44245d.setContent(html_0fcea2de121d5522ea4dfbef1bb762d2);
+                var html_2dc88d89aa33ca688632115c1ea12efa = $(`<div id="html_2dc88d89aa33ca688632115c1ea12efa" style="width: 100.0%; height: 100.0%;"><b>Candidate #13</b><br>Score: 0.01<br>Elevation: 105m<br>Elev score: 0.12<br>Cliff (steep+facing): 0.02<br>Prox score: 0.83<br>Approach: 0.09<br>Route bonus: 0.00<br><br><a href='https://www.google.com/maps?q=62.50600,26.18800' target='_blank'>📍 Avaa Google Mapsissa</a></div>`)[0];
+                popup_e8b9123fadc9be6d4d048985cf9b8cc7.setContent(html_2dc88d89aa33ca688632115c1ea12efa);
             
         
 
-        circle_marker_d393adb444fa4e8001b4caee7dd0662c.bindPopup(popup_64f9182c5101be88fdd2909c5f44245d)
+        circle_marker_f5569046d5c0c5f2a8b8e7f74207a741.bindPopup(popup_e8b9123fadc9be6d4d048985cf9b8cc7)
         ;
 
         
     
     
-            var circle_marker_8ee68c1902a6f1efb4702a7947cd4528 = L.circleMarker(
+            var circle_marker_4b22b3deb055973380dfeb7dc4c039b1 = L.circleMarker(
                 [61.70199999999991, 25.700000000000134],
                 {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8, "stroke": true, "weight": 3}
-            ).addTo(feature_group_b0987627b200f3447d3fb5f9725c38a8);
+            ).addTo(feature_group_a56c8acade035f07b582245aa5df7f0b);
         
     
-        var popup_6b826dcbbe2326fd5627e179c316eb54 = L.popup({
-  "maxWidth": 200,
+        var popup_1fc8ac125359670dc8c3ea0fe45c42aa = L.popup({
+  "maxWidth": 220,
 });
 
         
             
-                var html_485b5f9584071d22a875176217b9fe99 = $(`<div id="html_485b5f9584071d22a875176217b9fe99" style="width: 100.0%; height: 100.0%;"><b>Candidate</b><br>Score: 0.01<br>Elevation: 171m<br>Elev score: 0.00<br>Cliff (steep+facing): 0.02<br>Prox score: 0.73<br>Approach: 0.00<br>Route bonus: 0.00</div>`)[0];
-                popup_6b826dcbbe2326fd5627e179c316eb54.setContent(html_485b5f9584071d22a875176217b9fe99);
+                var html_33e006ab9c2d35244a677fbd6fb71191 = $(`<div id="html_33e006ab9c2d35244a677fbd6fb71191" style="width: 100.0%; height: 100.0%;"><b>Candidate #14</b><br>Score: 0.01<br>Elevation: 171m<br>Elev score: 0.00<br>Cliff (steep+facing): 0.02<br>Prox score: 0.73<br>Approach: 0.00<br>Route bonus: 0.00<br><br><a href='https://www.google.com/maps?q=61.70200,25.70000' target='_blank'>📍 Avaa Google Mapsissa</a></div>`)[0];
+                popup_1fc8ac125359670dc8c3ea0fe45c42aa.setContent(html_33e006ab9c2d35244a677fbd6fb71191);
             
         
 
-        circle_marker_8ee68c1902a6f1efb4702a7947cd4528.bindPopup(popup_6b826dcbbe2326fd5627e179c316eb54)
+        circle_marker_4b22b3deb055973380dfeb7dc4c039b1.bindPopup(popup_1fc8ac125359670dc8c3ea0fe45c42aa)
         ;
 
         
     
     
-            var circle_marker_1e19ccf99619726a89bb4e4ac5d47539 = L.circleMarker(
+            var circle_marker_5e85074157cddf9b9c4dc88cb0e2b9d1 = L.circleMarker(
                 [62.51399999999946, 26.76400000000049],
                 {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8, "stroke": true, "weight": 3}
-            ).addTo(feature_group_b0987627b200f3447d3fb5f9725c38a8);
+            ).addTo(feature_group_a56c8acade035f07b582245aa5df7f0b);
         
     
-        var popup_62ca18a75c13b8a65b51362e36885fea = L.popup({
-  "maxWidth": 200,
+        var popup_7cdf7457a4e9b6a450f283c7ac737326 = L.popup({
+  "maxWidth": 220,
 });
 
         
             
-                var html_7f8cb73482a85c8b579f17fd944af5ec = $(`<div id="html_7f8cb73482a85c8b579f17fd944af5ec" style="width: 100.0%; height: 100.0%;"><b>Candidate</b><br>Score: 0.01<br>Elevation: 118m<br>Elev score: 0.15<br>Cliff (steep+facing): 0.01<br>Prox score: 0.89<br>Approach: 0.19<br>Route bonus: 0.00</div>`)[0];
-                popup_62ca18a75c13b8a65b51362e36885fea.setContent(html_7f8cb73482a85c8b579f17fd944af5ec);
+                var html_c5059b7802f533edeb49ca2cd00cc302 = $(`<div id="html_c5059b7802f533edeb49ca2cd00cc302" style="width: 100.0%; height: 100.0%;"><b>Candidate #15</b><br>Score: 0.01<br>Elevation: 118m<br>Elev score: 0.15<br>Cliff (steep+facing): 0.01<br>Prox score: 0.89<br>Approach: 0.19<br>Route bonus: 0.00<br><br><a href='https://www.google.com/maps?q=62.51400,26.76400' target='_blank'>📍 Avaa Google Mapsissa</a></div>`)[0];
+                popup_7cdf7457a4e9b6a450f283c7ac737326.setContent(html_c5059b7802f533edeb49ca2cd00cc302);
             
         
 
-        circle_marker_1e19ccf99619726a89bb4e4ac5d47539.bindPopup(popup_62ca18a75c13b8a65b51362e36885fea)
+        circle_marker_5e85074157cddf9b9c4dc88cb0e2b9d1.bindPopup(popup_7cdf7457a4e9b6a450f283c7ac737326)
         ;
 
         
     
     
-            var circle_marker_8716635e2797520e024f4e58d058abf7 = L.circleMarker(
+            var circle_marker_71e4122cff889af79bd75204906ae0c7 = L.circleMarker(
                 [62.25399999999961, 25.9000000000002],
                 {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8, "stroke": true, "weight": 3}
-            ).addTo(feature_group_b0987627b200f3447d3fb5f9725c38a8);
+            ).addTo(feature_group_a56c8acade035f07b582245aa5df7f0b);
         
     
-        var popup_e4dd9d899da06b158122efc3d1c42a8e = L.popup({
-  "maxWidth": 200,
+        var popup_322fb0e8d39289e2729cb6e27b1ba2b4 = L.popup({
+  "maxWidth": 220,
 });
 
         
             
-                var html_ea3f5259a22259104c2a746d07994301 = $(`<div id="html_ea3f5259a22259104c2a746d07994301" style="width: 100.0%; height: 100.0%;"><b>Candidate</b><br>Score: 0.01<br>Elevation: 117m<br>Elev score: 0.00<br>Cliff (steep+facing): 0.02<br>Prox score: 0.73<br>Approach: 0.08<br>Route bonus: 0.00</div>`)[0];
-                popup_e4dd9d899da06b158122efc3d1c42a8e.setContent(html_ea3f5259a22259104c2a746d07994301);
+                var html_eaac7f4cad160fe9d6fe524ca8e18836 = $(`<div id="html_eaac7f4cad160fe9d6fe524ca8e18836" style="width: 100.0%; height: 100.0%;"><b>Candidate #16</b><br>Score: 0.01<br>Elevation: 117m<br>Elev score: 0.00<br>Cliff (steep+facing): 0.02<br>Prox score: 0.73<br>Approach: 0.08<br>Route bonus: 0.00<br><br><a href='https://www.google.com/maps?q=62.25400,25.90000' target='_blank'>📍 Avaa Google Mapsissa</a></div>`)[0];
+                popup_322fb0e8d39289e2729cb6e27b1ba2b4.setContent(html_eaac7f4cad160fe9d6fe524ca8e18836);
             
         
 
-        circle_marker_8716635e2797520e024f4e58d058abf7.bindPopup(popup_e4dd9d899da06b158122efc3d1c42a8e)
+        circle_marker_71e4122cff889af79bd75204906ae0c7.bindPopup(popup_322fb0e8d39289e2729cb6e27b1ba2b4)
         ;
 
         
     
     
-            var circle_marker_0d22a0282d8abcbf137f0458113be174 = L.circleMarker(
+            var circle_marker_1b7f50d3ac6e49be32ab0fb311861caa = L.circleMarker(
                 [62.309999999999576, 25.71200000000014],
                 {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8, "stroke": true, "weight": 3}
-            ).addTo(feature_group_b0987627b200f3447d3fb5f9725c38a8);
+            ).addTo(feature_group_a56c8acade035f07b582245aa5df7f0b);
         
     
-        var popup_ef74fb302e2d08dcaac6eb26645210a3 = L.popup({
-  "maxWidth": 200,
+        var popup_6f17c5d2ed1a093dbba68ba0d72ce85d = L.popup({
+  "maxWidth": 220,
 });
 
         
             
-                var html_84ffc17bf78ada0ee89bfe17e9128f81 = $(`<div id="html_84ffc17bf78ada0ee89bfe17e9128f81" style="width: 100.0%; height: 100.0%;"><b>Candidate</b><br>Score: 0.01<br>Elevation: 122m<br>Elev score: 0.00<br>Cliff (steep+facing): 0.01<br>Prox score: 0.83<br>Approach: 0.18<br>Route bonus: 0.00</div>`)[0];
-                popup_ef74fb302e2d08dcaac6eb26645210a3.setContent(html_84ffc17bf78ada0ee89bfe17e9128f81);
+                var html_daae230f5b25ed25c8c8b60ffdfd7949 = $(`<div id="html_daae230f5b25ed25c8c8b60ffdfd7949" style="width: 100.0%; height: 100.0%;"><b>Candidate #17</b><br>Score: 0.01<br>Elevation: 122m<br>Elev score: 0.00<br>Cliff (steep+facing): 0.01<br>Prox score: 0.83<br>Approach: 0.18<br>Route bonus: 0.00<br><br><a href='https://www.google.com/maps?q=62.31000,25.71200' target='_blank'>📍 Avaa Google Mapsissa</a></div>`)[0];
+                popup_6f17c5d2ed1a093dbba68ba0d72ce85d.setContent(html_daae230f5b25ed25c8c8b60ffdfd7949);
             
         
 
-        circle_marker_0d22a0282d8abcbf137f0458113be174.bindPopup(popup_ef74fb302e2d08dcaac6eb26645210a3)
+        circle_marker_1b7f50d3ac6e49be32ab0fb311861caa.bindPopup(popup_6f17c5d2ed1a093dbba68ba0d72ce85d)
         ;
 
         
     
     
-            var circle_marker_39e1e74063667924d09ea9b1e2127f4b = L.circleMarker(
+            var circle_marker_1eaec98da492030d88efbf6e6b62286d = L.circleMarker(
                 [62.241999999999614, 25.8960000000002],
                 {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8, "stroke": true, "weight": 3}
-            ).addTo(feature_group_b0987627b200f3447d3fb5f9725c38a8);
+            ).addTo(feature_group_a56c8acade035f07b582245aa5df7f0b);
         
     
-        var popup_708dd21870a030c33380af60542de53a = L.popup({
-  "maxWidth": 200,
+        var popup_9d35a8f72c109f75e45f69058ac632c9 = L.popup({
+  "maxWidth": 220,
 });
 
         
             
-                var html_09618550c2174daf957dc1ff556739a5 = $(`<div id="html_09618550c2174daf957dc1ff556739a5" style="width: 100.0%; height: 100.0%;"><b>Candidate</b><br>Score: 0.01<br>Elevation: 123m<br>Elev score: 0.00<br>Cliff (steep+facing): 0.01<br>Prox score: 0.70<br>Approach: 0.01<br>Route bonus: 0.00</div>`)[0];
-                popup_708dd21870a030c33380af60542de53a.setContent(html_09618550c2174daf957dc1ff556739a5);
+                var html_a5cb483ce8cb46c4b51b6354bb7bfc0b = $(`<div id="html_a5cb483ce8cb46c4b51b6354bb7bfc0b" style="width: 100.0%; height: 100.0%;"><b>Candidate #18</b><br>Score: 0.01<br>Elevation: 123m<br>Elev score: 0.00<br>Cliff (steep+facing): 0.01<br>Prox score: 0.70<br>Approach: 0.01<br>Route bonus: 0.00<br><br><a href='https://www.google.com/maps?q=62.24200,25.89600' target='_blank'>📍 Avaa Google Mapsissa</a></div>`)[0];
+                popup_9d35a8f72c109f75e45f69058ac632c9.setContent(html_a5cb483ce8cb46c4b51b6354bb7bfc0b);
             
         
 
-        circle_marker_39e1e74063667924d09ea9b1e2127f4b.bindPopup(popup_708dd21870a030c33380af60542de53a)
+        circle_marker_1eaec98da492030d88efbf6e6b62286d.bindPopup(popup_9d35a8f72c109f75e45f69058ac632c9)
         ;
 
         
     
     
-            var circle_marker_ddc04de71ff16701eb0303ff65409bff = L.circleMarker(
+            var circle_marker_dd8646e82ec663360c8ca8770c8142de = L.circleMarker(
                 [61.59799999999997, 25.588000000000097],
                 {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8, "stroke": true, "weight": 3}
-            ).addTo(feature_group_b0987627b200f3447d3fb5f9725c38a8);
+            ).addTo(feature_group_a56c8acade035f07b582245aa5df7f0b);
         
     
-        var popup_517f203b8c53d1ac68cdac3b6d15dc75 = L.popup({
-  "maxWidth": 200,
+        var popup_9fe201d6ac7ce07e83f93f7d04da8421 = L.popup({
+  "maxWidth": 220,
 });
 
         
             
-                var html_04cb48d265748a2e863a4cbcc979c1a7 = $(`<div id="html_04cb48d265748a2e863a4cbcc979c1a7" style="width: 100.0%; height: 100.0%;"><b>Candidate</b><br>Score: 0.01<br>Elevation: 130m<br>Elev score: 0.00<br>Cliff (steep+facing): 0.01<br>Prox score: 0.84<br>Approach: 0.19<br>Route bonus: 0.00</div>`)[0];
-                popup_517f203b8c53d1ac68cdac3b6d15dc75.setContent(html_04cb48d265748a2e863a4cbcc979c1a7);
+                var html_5b7e2e70096d380fc74bf808cda26a50 = $(`<div id="html_5b7e2e70096d380fc74bf808cda26a50" style="width: 100.0%; height: 100.0%;"><b>Candidate #19</b><br>Score: 0.01<br>Elevation: 130m<br>Elev score: 0.00<br>Cliff (steep+facing): 0.01<br>Prox score: 0.84<br>Approach: 0.19<br>Route bonus: 0.00<br><br><a href='https://www.google.com/maps?q=61.59800,25.58800' target='_blank'>📍 Avaa Google Mapsissa</a></div>`)[0];
+                popup_9fe201d6ac7ce07e83f93f7d04da8421.setContent(html_5b7e2e70096d380fc74bf808cda26a50);
             
         
 
-        circle_marker_ddc04de71ff16701eb0303ff65409bff.bindPopup(popup_517f203b8c53d1ac68cdac3b6d15dc75)
+        circle_marker_dd8646e82ec663360c8ca8770c8142de.bindPopup(popup_9fe201d6ac7ce07e83f93f7d04da8421)
         ;
 
         
     
     
-            var circle_marker_23b3a77bc28724889301fbcd5bbef42f = L.circleMarker(
+            var circle_marker_c5898eb0f9143fbe90e575d1ca36c23d = L.circleMarker(
                 [62.51799999999946, 26.748000000000484],
                 {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8, "stroke": true, "weight": 3}
-            ).addTo(feature_group_b0987627b200f3447d3fb5f9725c38a8);
+            ).addTo(feature_group_a56c8acade035f07b582245aa5df7f0b);
         
     
-        var popup_e21c165c354488abf3f76196955afff7 = L.popup({
-  "maxWidth": 200,
+        var popup_07a07a6a6b37ff12f29c63624523d542 = L.popup({
+  "maxWidth": 220,
 });
 
         
             
-                var html_b3c808be852a42ed829a8b51ab6bf341 = $(`<div id="html_b3c808be852a42ed829a8b51ab6bf341" style="width: 100.0%; height: 100.0%;"><b>Candidate</b><br>Score: 0.01<br>Elevation: 144m<br>Elev score: 0.00<br>Cliff (steep+facing): 0.01<br>Prox score: 0.91<br>Approach: 0.14<br>Route bonus: 0.00</div>`)[0];
-                popup_e21c165c354488abf3f76196955afff7.setContent(html_b3c808be852a42ed829a8b51ab6bf341);
+                var html_ed4b78d24d0f5c3308ace096f0c40f67 = $(`<div id="html_ed4b78d24d0f5c3308ace096f0c40f67" style="width: 100.0%; height: 100.0%;"><b>Candidate #20</b><br>Score: 0.01<br>Elevation: 144m<br>Elev score: 0.00<br>Cliff (steep+facing): 0.01<br>Prox score: 0.91<br>Approach: 0.14<br>Route bonus: 0.00<br><br><a href='https://www.google.com/maps?q=62.51800,26.74800' target='_blank'>📍 Avaa Google Mapsissa</a></div>`)[0];
+                popup_07a07a6a6b37ff12f29c63624523d542.setContent(html_ed4b78d24d0f5c3308ace096f0c40f67);
             
         
 
-        circle_marker_23b3a77bc28724889301fbcd5bbef42f.bindPopup(popup_e21c165c354488abf3f76196955afff7)
+        circle_marker_c5898eb0f9143fbe90e575d1ca36c23d.bindPopup(popup_07a07a6a6b37ff12f29c63624523d542)
         ;
 
         
     
     
-            var circle_marker_a61cbe7b5d6ff67f3aa2ac4c95b53bc8 = L.circleMarker(
+            var circle_marker_b3e24b1b2310025dacfd90d71369fd39 = L.circleMarker(
                 [61.7299999999999, 25.464000000000055],
                 {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8, "stroke": true, "weight": 3}
-            ).addTo(feature_group_b0987627b200f3447d3fb5f9725c38a8);
+            ).addTo(feature_group_a56c8acade035f07b582245aa5df7f0b);
         
     
-        var popup_5535748219947dc8c87cde3daf1819c2 = L.popup({
-  "maxWidth": 200,
+        var popup_287a4787b3c7bb4ad0463a2998e0d516 = L.popup({
+  "maxWidth": 220,
 });
 
         
             
-                var html_ac42c833b5dee166008ceb560f793702 = $(`<div id="html_ac42c833b5dee166008ceb560f793702" style="width: 100.0%; height: 100.0%;"><b>Candidate</b><br>Score: 0.01<br>Elevation: 141m<br>Elev score: 0.00<br>Cliff (steep+facing): 0.01<br>Prox score: 0.80<br>Approach: 0.08<br>Route bonus: 0.00</div>`)[0];
-                popup_5535748219947dc8c87cde3daf1819c2.setContent(html_ac42c833b5dee166008ceb560f793702);
+                var html_85df30dadc50bebba7741b60383ff446 = $(`<div id="html_85df30dadc50bebba7741b60383ff446" style="width: 100.0%; height: 100.0%;"><b>Candidate #21</b><br>Score: 0.01<br>Elevation: 141m<br>Elev score: 0.00<br>Cliff (steep+facing): 0.01<br>Prox score: 0.80<br>Approach: 0.08<br>Route bonus: 0.00<br><br><a href='https://www.google.com/maps?q=61.73000,25.46400' target='_blank'>📍 Avaa Google Mapsissa</a></div>`)[0];
+                popup_287a4787b3c7bb4ad0463a2998e0d516.setContent(html_85df30dadc50bebba7741b60383ff446);
             
         
 
-        circle_marker_a61cbe7b5d6ff67f3aa2ac4c95b53bc8.bindPopup(popup_5535748219947dc8c87cde3daf1819c2)
+        circle_marker_b3e24b1b2310025dacfd90d71369fd39.bindPopup(popup_287a4787b3c7bb4ad0463a2998e0d516)
         ;
 
         
     
     
-            var circle_marker_74abfe48ef1f45fc8a241e89985cabb1 = L.circleMarker(
+            var circle_marker_f05651652a34fdd7d1406930a6eab65b = L.circleMarker(
                 [61.97399999999976, 25.496000000000066],
                 {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8, "stroke": true, "weight": 3}
-            ).addTo(feature_group_b0987627b200f3447d3fb5f9725c38a8);
+            ).addTo(feature_group_a56c8acade035f07b582245aa5df7f0b);
         
     
-        var popup_23e0d165055e2cf83a85084b734d7008 = L.popup({
-  "maxWidth": 200,
+        var popup_1c5e960719e0db2061f92e28f2763654 = L.popup({
+  "maxWidth": 220,
 });
 
         
             
-                var html_18862874dd7e65a1cab9add6bff8b51c = $(`<div id="html_18862874dd7e65a1cab9add6bff8b51c" style="width: 100.0%; height: 100.0%;"><b>Candidate</b><br>Score: 0.01<br>Elevation: 151m<br>Elev score: 0.00<br>Cliff (steep+facing): 0.01<br>Prox score: 0.73<br>Approach: 0.06<br>Route bonus: 0.00</div>`)[0];
-                popup_23e0d165055e2cf83a85084b734d7008.setContent(html_18862874dd7e65a1cab9add6bff8b51c);
+                var html_a397151d016c85d1786a5dfd88278a62 = $(`<div id="html_a397151d016c85d1786a5dfd88278a62" style="width: 100.0%; height: 100.0%;"><b>Candidate #22</b><br>Score: 0.01<br>Elevation: 151m<br>Elev score: 0.00<br>Cliff (steep+facing): 0.01<br>Prox score: 0.73<br>Approach: 0.06<br>Route bonus: 0.00<br><br><a href='https://www.google.com/maps?q=61.97400,25.49600' target='_blank'>📍 Avaa Google Mapsissa</a></div>`)[0];
+                popup_1c5e960719e0db2061f92e28f2763654.setContent(html_a397151d016c85d1786a5dfd88278a62);
             
         
 
-        circle_marker_74abfe48ef1f45fc8a241e89985cabb1.bindPopup(popup_23e0d165055e2cf83a85084b734d7008)
+        circle_marker_f05651652a34fdd7d1406930a6eab65b.bindPopup(popup_1c5e960719e0db2061f92e28f2763654)
         ;
 
         
     
     
-            var circle_marker_3410c7061d6a7b423b9093d90868810b = L.circleMarker(
+            var circle_marker_64896c5cc474d67a3e27391ac4f10e8d = L.circleMarker(
                 [61.85799999999983, 25.71600000000014],
                 {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8, "stroke": true, "weight": 3}
-            ).addTo(feature_group_b0987627b200f3447d3fb5f9725c38a8);
+            ).addTo(feature_group_a56c8acade035f07b582245aa5df7f0b);
         
     
-        var popup_4f15974a526e2a8b6ce09eafc3da5574 = L.popup({
-  "maxWidth": 200,
+        var popup_f49c85811665e786c4760cdd328b2499 = L.popup({
+  "maxWidth": 220,
 });
 
         
             
-                var html_cf6a8554744a0ea4e37ff1043b4f26ec = $(`<div id="html_cf6a8554744a0ea4e37ff1043b4f26ec" style="width: 100.0%; height: 100.0%;"><b>Candidate</b><br>Score: 0.01<br>Elevation: 125m<br>Elev score: 0.00<br>Cliff (steep+facing): 0.01<br>Prox score: 0.71<br>Approach: 0.06<br>Route bonus: 0.00</div>`)[0];
-                popup_4f15974a526e2a8b6ce09eafc3da5574.setContent(html_cf6a8554744a0ea4e37ff1043b4f26ec);
+                var html_3b1ce1037527fea14d023ddfe19c21bd = $(`<div id="html_3b1ce1037527fea14d023ddfe19c21bd" style="width: 100.0%; height: 100.0%;"><b>Candidate #23</b><br>Score: 0.01<br>Elevation: 125m<br>Elev score: 0.00<br>Cliff (steep+facing): 0.01<br>Prox score: 0.71<br>Approach: 0.06<br>Route bonus: 0.00<br><br><a href='https://www.google.com/maps?q=61.85800,25.71600' target='_blank'>📍 Avaa Google Mapsissa</a></div>`)[0];
+                popup_f49c85811665e786c4760cdd328b2499.setContent(html_3b1ce1037527fea14d023ddfe19c21bd);
             
         
 
-        circle_marker_3410c7061d6a7b423b9093d90868810b.bindPopup(popup_4f15974a526e2a8b6ce09eafc3da5574)
+        circle_marker_64896c5cc474d67a3e27391ac4f10e8d.bindPopup(popup_f49c85811665e786c4760cdd328b2499)
         ;
 
         
     
     
-            var circle_marker_d3b7a27727963ccf72147d1472dd5021 = L.circleMarker(
+            var circle_marker_fb8b96664b7b8d563dd8e1c3c693ad13 = L.circleMarker(
                 [62.55799999999944, 26.580000000000428],
                 {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8, "stroke": true, "weight": 3}
-            ).addTo(feature_group_b0987627b200f3447d3fb5f9725c38a8);
+            ).addTo(feature_group_a56c8acade035f07b582245aa5df7f0b);
         
     
-        var popup_8549044251590c6de64427d960306bd8 = L.popup({
-  "maxWidth": 200,
+        var popup_7dc00ff318ce04f478f2175846ab7e01 = L.popup({
+  "maxWidth": 220,
 });
 
         
             
-                var html_10b1977cebbd52359d9bd155fb24e899 = $(`<div id="html_10b1977cebbd52359d9bd155fb24e899" style="width: 100.0%; height: 100.0%;"><b>Candidate</b><br>Score: 0.01<br>Elevation: 106m<br>Elev score: 0.85<br>Cliff (steep+facing): 0.01<br>Prox score: 0.96<br>Approach: 0.20<br>Route bonus: 0.15</div>`)[0];
-                popup_8549044251590c6de64427d960306bd8.setContent(html_10b1977cebbd52359d9bd155fb24e899);
+                var html_850a0be2d2900106ce8647a6e4512ea6 = $(`<div id="html_850a0be2d2900106ce8647a6e4512ea6" style="width: 100.0%; height: 100.0%;"><b>Candidate #24</b><br>Score: 0.01<br>Elevation: 106m<br>Elev score: 0.85<br>Cliff (steep+facing): 0.01<br>Prox score: 0.96<br>Approach: 0.20<br>Route bonus: 0.15<br><br><a href='https://www.google.com/maps?q=62.55800,26.58000' target='_blank'>📍 Avaa Google Mapsissa</a></div>`)[0];
+                popup_7dc00ff318ce04f478f2175846ab7e01.setContent(html_850a0be2d2900106ce8647a6e4512ea6);
             
         
 
-        circle_marker_d3b7a27727963ccf72147d1472dd5021.bindPopup(popup_8549044251590c6de64427d960306bd8)
+        circle_marker_fb8b96664b7b8d563dd8e1c3c693ad13.bindPopup(popup_7dc00ff318ce04f478f2175846ab7e01)
         ;
 
         
     
     
-            var circle_marker_995245ec501bfc89e175bc7bd564a654 = L.circleMarker(
+            var circle_marker_7b86eb111f6bf489d3605b7cd465ee15 = L.circleMarker(
                 [62.561999999999436, 26.692000000000466],
                 {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8, "stroke": true, "weight": 3}
-            ).addTo(feature_group_b0987627b200f3447d3fb5f9725c38a8);
+            ).addTo(feature_group_a56c8acade035f07b582245aa5df7f0b);
         
     
-        var popup_e6c2a38f8d3ecd1c898984cb91aee648 = L.popup({
-  "maxWidth": 200,
+        var popup_a5de74a4d3e8b2a70d77fbfb0a77641a = L.popup({
+  "maxWidth": 220,
 });
 
         
             
-                var html_9f40118d96c9ace4e6016ac4f4d7792d = $(`<div id="html_9f40118d96c9ace4e6016ac4f4d7792d" style="width: 100.0%; height: 100.0%;"><b>Candidate</b><br>Score: 0.01<br>Elevation: 127m<br>Elev score: 0.00<br>Cliff (steep+facing): 0.01<br>Prox score: 0.95<br>Approach: 0.52<br>Route bonus: 0.02</div>`)[0];
-                popup_e6c2a38f8d3ecd1c898984cb91aee648.setContent(html_9f40118d96c9ace4e6016ac4f4d7792d);
+                var html_d4f5ab6e5e364bc5772bf6648274cae8 = $(`<div id="html_d4f5ab6e5e364bc5772bf6648274cae8" style="width: 100.0%; height: 100.0%;"><b>Candidate #25</b><br>Score: 0.01<br>Elevation: 127m<br>Elev score: 0.00<br>Cliff (steep+facing): 0.01<br>Prox score: 0.95<br>Approach: 0.52<br>Route bonus: 0.02<br><br><a href='https://www.google.com/maps?q=62.56200,26.69200' target='_blank'>📍 Avaa Google Mapsissa</a></div>`)[0];
+                popup_a5de74a4d3e8b2a70d77fbfb0a77641a.setContent(html_d4f5ab6e5e364bc5772bf6648274cae8);
             
         
 
-        circle_marker_995245ec501bfc89e175bc7bd564a654.bindPopup(popup_e6c2a38f8d3ecd1c898984cb91aee648)
+        circle_marker_7b86eb111f6bf489d3605b7cd465ee15.bindPopup(popup_a5de74a4d3e8b2a70d77fbfb0a77641a)
         ;
 
         
     
     
-            var circle_marker_ce13fb80a67553479f64ab92ac90848a = L.circleMarker(
+            var circle_marker_5b7efae23cf29f139ccdfb640a43a767 = L.circleMarker(
                 [61.7299999999999, 25.44800000000005],
                 {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8, "stroke": true, "weight": 3}
-            ).addTo(feature_group_b0987627b200f3447d3fb5f9725c38a8);
+            ).addTo(feature_group_a56c8acade035f07b582245aa5df7f0b);
         
     
-        var popup_23878dc76bba1df5dc02b0c6b8f53a9b = L.popup({
-  "maxWidth": 200,
+        var popup_146026bb45a1257bd88103cd4a08ba7d = L.popup({
+  "maxWidth": 220,
 });
 
         
             
-                var html_3d118d51e427fee6959befc6090da39e = $(`<div id="html_3d118d51e427fee6959befc6090da39e" style="width: 100.0%; height: 100.0%;"><b>Candidate</b><br>Score: 0.00<br>Elevation: 103m<br>Elev score: 0.00<br>Cliff (steep+facing): 0.01<br>Prox score: 0.80<br>Approach: 0.09<br>Route bonus: 0.00</div>`)[0];
-                popup_23878dc76bba1df5dc02b0c6b8f53a9b.setContent(html_3d118d51e427fee6959befc6090da39e);
+                var html_a64a4fa15bfaee4e317fe9683937b9ff = $(`<div id="html_a64a4fa15bfaee4e317fe9683937b9ff" style="width: 100.0%; height: 100.0%;"><b>Candidate #26</b><br>Score: 0.00<br>Elevation: 103m<br>Elev score: 0.00<br>Cliff (steep+facing): 0.01<br>Prox score: 0.80<br>Approach: 0.09<br>Route bonus: 0.00<br><br><a href='https://www.google.com/maps?q=61.73000,25.44800' target='_blank'>📍 Avaa Google Mapsissa</a></div>`)[0];
+                popup_146026bb45a1257bd88103cd4a08ba7d.setContent(html_a64a4fa15bfaee4e317fe9683937b9ff);
             
         
 
-        circle_marker_ce13fb80a67553479f64ab92ac90848a.bindPopup(popup_23878dc76bba1df5dc02b0c6b8f53a9b)
+        circle_marker_5b7efae23cf29f139ccdfb640a43a767.bindPopup(popup_146026bb45a1257bd88103cd4a08ba7d)
         ;
 
         
     
     
-            var circle_marker_f7a6e9daf0fd0e5f68e6878b1c15aa46 = L.circleMarker(
+            var circle_marker_208b9321b840cdc66c4fa8ed61dee662 = L.circleMarker(
                 [61.92999999999979, 25.700000000000134],
                 {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8, "stroke": true, "weight": 3}
-            ).addTo(feature_group_b0987627b200f3447d3fb5f9725c38a8);
+            ).addTo(feature_group_a56c8acade035f07b582245aa5df7f0b);
         
     
-        var popup_da11cb7f5347fa0f768aa79921d744a6 = L.popup({
-  "maxWidth": 200,
+        var popup_40d90a4d26cb719e1a04ef041fbdf9ac = L.popup({
+  "maxWidth": 220,
 });
 
         
             
-                var html_a26191d3bdf88fc63f24d29ae9ec9438 = $(`<div id="html_a26191d3bdf88fc63f24d29ae9ec9438" style="width: 100.0%; height: 100.0%;"><b>Candidate</b><br>Score: 0.00<br>Elevation: 133m<br>Elev score: 0.00<br>Cliff (steep+facing): 0.01<br>Prox score: 0.86<br>Approach: 0.00<br>Route bonus: 0.00</div>`)[0];
-                popup_da11cb7f5347fa0f768aa79921d744a6.setContent(html_a26191d3bdf88fc63f24d29ae9ec9438);
+                var html_1247acd11463795d3d9d26285da9539c = $(`<div id="html_1247acd11463795d3d9d26285da9539c" style="width: 100.0%; height: 100.0%;"><b>Candidate #27</b><br>Score: 0.00<br>Elevation: 133m<br>Elev score: 0.00<br>Cliff (steep+facing): 0.01<br>Prox score: 0.86<br>Approach: 0.00<br>Route bonus: 0.00<br><br><a href='https://www.google.com/maps?q=61.93000,25.70000' target='_blank'>📍 Avaa Google Mapsissa</a></div>`)[0];
+                popup_40d90a4d26cb719e1a04ef041fbdf9ac.setContent(html_1247acd11463795d3d9d26285da9539c);
             
         
 
-        circle_marker_f7a6e9daf0fd0e5f68e6878b1c15aa46.bindPopup(popup_da11cb7f5347fa0f768aa79921d744a6)
+        circle_marker_208b9321b840cdc66c4fa8ed61dee662.bindPopup(popup_40d90a4d26cb719e1a04ef041fbdf9ac)
         ;
 
         
     
     
-            var circle_marker_65eade25314261e08cab1ef4ce67f4c1 = L.circleMarker(
+            var circle_marker_21991abd7b781d9adac343b991cbc709 = L.circleMarker(
                 [61.933999999999784, 25.696000000000133],
                 {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8, "stroke": true, "weight": 3}
-            ).addTo(feature_group_b0987627b200f3447d3fb5f9725c38a8);
+            ).addTo(feature_group_a56c8acade035f07b582245aa5df7f0b);
         
     
-        var popup_8a34cca9f09fccbfc5b8bc7ebee4fa6a = L.popup({
-  "maxWidth": 200,
+        var popup_6704438c8884ed281cac08da27c1b501 = L.popup({
+  "maxWidth": 220,
 });
 
         
             
-                var html_5c0ec83a4d421f7020451669b5e6c560 = $(`<div id="html_5c0ec83a4d421f7020451669b5e6c560" style="width: 100.0%; height: 100.0%;"><b>Candidate</b><br>Score: 0.00<br>Elevation: 143m<br>Elev score: 0.00<br>Cliff (steep+facing): 0.01<br>Prox score: 0.87<br>Approach: 0.01<br>Route bonus: 0.00</div>`)[0];
-                popup_8a34cca9f09fccbfc5b8bc7ebee4fa6a.setContent(html_5c0ec83a4d421f7020451669b5e6c560);
+                var html_73f9abe3c7bd0eb53b169ee691522def = $(`<div id="html_73f9abe3c7bd0eb53b169ee691522def" style="width: 100.0%; height: 100.0%;"><b>Candidate #28</b><br>Score: 0.00<br>Elevation: 143m<br>Elev score: 0.00<br>Cliff (steep+facing): 0.01<br>Prox score: 0.87<br>Approach: 0.01<br>Route bonus: 0.00<br><br><a href='https://www.google.com/maps?q=61.93400,25.69600' target='_blank'>📍 Avaa Google Mapsissa</a></div>`)[0];
+                popup_6704438c8884ed281cac08da27c1b501.setContent(html_73f9abe3c7bd0eb53b169ee691522def);
             
         
 
-        circle_marker_65eade25314261e08cab1ef4ce67f4c1.bindPopup(popup_8a34cca9f09fccbfc5b8bc7ebee4fa6a)
+        circle_marker_21991abd7b781d9adac343b991cbc709.bindPopup(popup_6704438c8884ed281cac08da27c1b501)
         ;
 
         
     
     
-            var circle_marker_1bb09e4602e44433f618fe6764fc209e = L.circleMarker(
+            var circle_marker_5d8a081163bea1405fde95c083d0cab5 = L.circleMarker(
                 [62.293999999999585, 25.648000000000117],
                 {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8, "stroke": true, "weight": 3}
-            ).addTo(feature_group_b0987627b200f3447d3fb5f9725c38a8);
+            ).addTo(feature_group_a56c8acade035f07b582245aa5df7f0b);
         
     
-        var popup_08deb2cec82ac2e2d0426a3cce8acf3d = L.popup({
-  "maxWidth": 200,
+        var popup_3a78938f66b9d03ad08308a46358fe01 = L.popup({
+  "maxWidth": 220,
 });
 
         
             
-                var html_3b282827a44adde68f7826038ce8be96 = $(`<div id="html_3b282827a44adde68f7826038ce8be96" style="width: 100.0%; height: 100.0%;"><b>Candidate</b><br>Score: 0.00<br>Elevation: 181m<br>Elev score: 0.00<br>Cliff (steep+facing): 0.01<br>Prox score: 0.76<br>Approach: 0.07<br>Route bonus: 0.00</div>`)[0];
-                popup_08deb2cec82ac2e2d0426a3cce8acf3d.setContent(html_3b282827a44adde68f7826038ce8be96);
+                var html_decce495c3e74684bc2928e5041b65b9 = $(`<div id="html_decce495c3e74684bc2928e5041b65b9" style="width: 100.0%; height: 100.0%;"><b>Candidate #29</b><br>Score: 0.00<br>Elevation: 181m<br>Elev score: 0.00<br>Cliff (steep+facing): 0.01<br>Prox score: 0.76<br>Approach: 0.07<br>Route bonus: 0.00<br><br><a href='https://www.google.com/maps?q=62.29400,25.64800' target='_blank'>📍 Avaa Google Mapsissa</a></div>`)[0];
+                popup_3a78938f66b9d03ad08308a46358fe01.setContent(html_decce495c3e74684bc2928e5041b65b9);
             
         
 
-        circle_marker_1bb09e4602e44433f618fe6764fc209e.bindPopup(popup_08deb2cec82ac2e2d0426a3cce8acf3d)
+        circle_marker_5d8a081163bea1405fde95c083d0cab5.bindPopup(popup_3a78938f66b9d03ad08308a46358fe01)
         ;
 
         
     
     
-            var circle_marker_d9f9e89965f90313397454444a2114f4 = L.circleMarker(
+            var circle_marker_05409c2834456c4b215fc79dc1b5809b = L.circleMarker(
                 [61.92599999999979, 25.704000000000136],
                 {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 8, "stroke": true, "weight": 3}
-            ).addTo(feature_group_b0987627b200f3447d3fb5f9725c38a8);
+            ).addTo(feature_group_a56c8acade035f07b582245aa5df7f0b);
         
     
-        var popup_7710790f104d831b8e598272a4e41871 = L.popup({
-  "maxWidth": 200,
+        var popup_1b0f94a18ac15c9c1eb1d856a51e492d = L.popup({
+  "maxWidth": 220,
 });
 
         
             
-                var html_4b386c85c2e786b60fca3940825b0a4c = $(`<div id="html_4b386c85c2e786b60fca3940825b0a4c" style="width: 100.0%; height: 100.0%;"><b>Candidate</b><br>Score: 0.00<br>Elevation: 97m<br>Elev score: 0.32<br>Cliff (steep+facing): 0.00<br>Prox score: 0.85<br>Approach: 0.03<br>Route bonus: 0.00</div>`)[0];
-                popup_7710790f104d831b8e598272a4e41871.setContent(html_4b386c85c2e786b60fca3940825b0a4c);
+                var html_338738da040f26881e6767c915543d3a = $(`<div id="html_338738da040f26881e6767c915543d3a" style="width: 100.0%; height: 100.0%;"><b>Candidate #30</b><br>Score: 0.00<br>Elevation: 97m<br>Elev score: 0.32<br>Cliff (steep+facing): 0.00<br>Prox score: 0.85<br>Approach: 0.03<br>Route bonus: 0.00<br><br><a href='https://www.google.com/maps?q=61.92600,25.70400' target='_blank'>📍 Avaa Google Mapsissa</a></div>`)[0];
+                popup_1b0f94a18ac15c9c1eb1d856a51e492d.setContent(html_338738da040f26881e6767c915543d3a);
             
         
 
-        circle_marker_d9f9e89965f90313397454444a2114f4.bindPopup(popup_7710790f104d831b8e598272a4e41871)
+        circle_marker_05409c2834456c4b215fc79dc1b5809b.bindPopup(popup_1b0f94a18ac15c9c1eb1d856a51e492d)
         ;
 
         
     
     
-            feature_group_b0987627b200f3447d3fb5f9725c38a8.addTo(map_323185ebdbaf21aac2a8281386714e93);
+            feature_group_a56c8acade035f07b582245aa5df7f0b.addTo(map_f47c4a40030001a423c562c44fb08954);
         
     
-            var feature_group_220a8eefcc268ae8be769ea4590d19da = L.featureGroup(
+            var feature_group_1f232bf52b7db9b9c13f0edd73b225c0 = L.featureGroup(
                 {
 }
             );
         
     
-            var circle_marker_d50b0b26cf14f8e1f4731c1cbf60d8ae = L.circleMarker(
+            var circle_marker_ef38cb64c4ccaa688cb1f41ee6912dac = L.circleMarker(
                 [62.4176, 25.9973],
                 {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 3}
-            ).addTo(feature_group_220a8eefcc268ae8be769ea4590d19da);
+            ).addTo(feature_group_1f232bf52b7db9b9c13f0edd73b225c0);
         
     
-        var popup_a6d7b4bf64aaf0b8c8e35a870453edf8 = L.popup({
+        var popup_1b9b5a40a380f1fefb1476b51071867d = L.popup({
   "maxWidth": 250,
 });
 
         
             
-                var html_a4c9c3e466b33bb435eb948862d62c1b = $(`<div id="html_a4c9c3e466b33bb435eb948862d62c1b" style="width: 100.0%; height: 100.0%;"><b>Saraakallio I (Laukaa)</b><br>Access: boat<br><small>One of Fennoscandia's largest rock art complexes. Hundreds of figures spanning thousands of years.</small></div>`)[0];
-                popup_a6d7b4bf64aaf0b8c8e35a870453edf8.setContent(html_a4c9c3e466b33bb435eb948862d62c1b);
+                var html_dfd14cb1599ce84ee85efbeff5699a59 = $(`<div id="html_dfd14cb1599ce84ee85efbeff5699a59" style="width: 100.0%; height: 100.0%;"><b>Saraakallio I (Laukaa)</b><br>Access: boat<br><small>One of Fennoscandia's largest rock art complexes. Hundreds of figures spanning thousands of years.</small></div>`)[0];
+                popup_1b9b5a40a380f1fefb1476b51071867d.setContent(html_dfd14cb1599ce84ee85efbeff5699a59);
             
         
 
-        circle_marker_d50b0b26cf14f8e1f4731c1cbf60d8ae.bindPopup(popup_a6d7b4bf64aaf0b8c8e35a870453edf8)
+        circle_marker_ef38cb64c4ccaa688cb1f41ee6912dac.bindPopup(popup_1b9b5a40a380f1fefb1476b51071867d)
         ;
 
         
     
     
-            var circle_marker_64a66c11c924624a2dc5df47272d9e8b = L.circleMarker(
+            var circle_marker_8fce2f211ac9900bef2211f02ef59441 = L.circleMarker(
                 [62.4195, 25.992],
                 {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 3}
-            ).addTo(feature_group_220a8eefcc268ae8be769ea4590d19da);
+            ).addTo(feature_group_1f232bf52b7db9b9c13f0edd73b225c0);
         
     
-        var popup_e2afb32dac20ed1a66a0bc809f0ff71f = L.popup({
+        var popup_b22683e0444b78335972a823da592aa3 = L.popup({
   "maxWidth": 250,
 });
 
         
             
-                var html_b639e4cf4d6574276f8a1833b033736d = $(`<div id="html_b639e4cf4d6574276f8a1833b033736d" style="width: 100.0%; height: 100.0%;"><b>Saraakallio II (Laukaa)</b><br>Access: boat<br><small>Secondary site ~300m from Saraakallio I on Saraavesi shore.</small></div>`)[0];
-                popup_e2afb32dac20ed1a66a0bc809f0ff71f.setContent(html_b639e4cf4d6574276f8a1833b033736d);
+                var html_c847d595f271060dfec96a0df0a76c7d = $(`<div id="html_c847d595f271060dfec96a0df0a76c7d" style="width: 100.0%; height: 100.0%;"><b>Saraakallio II (Laukaa)</b><br>Access: boat<br><small>Secondary site ~300m from Saraakallio I on Saraavesi shore.</small></div>`)[0];
+                popup_b22683e0444b78335972a823da592aa3.setContent(html_c847d595f271060dfec96a0df0a76c7d);
             
         
 
-        circle_marker_64a66c11c924624a2dc5df47272d9e8b.bindPopup(popup_e2afb32dac20ed1a66a0bc809f0ff71f)
+        circle_marker_8fce2f211ac9900bef2211f02ef59441.bindPopup(popup_b22683e0444b78335972a823da592aa3)
         ;
 
         
     
     
-            var circle_marker_4755cd2d42d6fa8a0976640b869e8c0f = L.circleMarker(
+            var circle_marker_8dec7127d31e0ea7568160bc9474f717 = L.circleMarker(
                 [62.4332, 26.2413],
                 {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 3}
-            ).addTo(feature_group_220a8eefcc268ae8be769ea4590d19da);
+            ).addTo(feature_group_1f232bf52b7db9b9c13f0edd73b225c0);
         
     
-        var popup_93c18c6129932c7fbcf7dacd830e24a9 = L.popup({
+        var popup_50e639a2de29cc2b80eacb247079b6ae = L.popup({
   "maxWidth": 250,
 });
 
         
             
-                var html_e169f0f946a1423ca9f8f54dcd54c0e3 = $(`<div id="html_e169f0f946a1423ca9f8f54dcd54c0e3" style="width: 100.0%; height: 100.0%;"><b>Toussunlinna (Laukaa / Hankavesi)</b><br>Access: boat<br><small>Vertical cliff face rising straight from lake. Elk figure. Practically inaccessible except by water.</small></div>`)[0];
-                popup_93c18c6129932c7fbcf7dacd830e24a9.setContent(html_e169f0f946a1423ca9f8f54dcd54c0e3);
+                var html_da3304dc00b2677a1ff33c6444792dcf = $(`<div id="html_da3304dc00b2677a1ff33c6444792dcf" style="width: 100.0%; height: 100.0%;"><b>Toussunlinna (Laukaa / Hankavesi)</b><br>Access: boat<br><small>Vertical cliff face rising straight from lake. Elk figure. Practically inaccessible except by water.</small></div>`)[0];
+                popup_50e639a2de29cc2b80eacb247079b6ae.setContent(html_da3304dc00b2677a1ff33c6444792dcf);
             
         
 
-        circle_marker_4755cd2d42d6fa8a0976640b869e8c0f.bindPopup(popup_93c18c6129932c7fbcf7dacd830e24a9)
+        circle_marker_8dec7127d31e0ea7568160bc9474f717.bindPopup(popup_50e639a2de29cc2b80eacb247079b6ae)
         ;
 
         
     
     
-            var circle_marker_cb8de9926e40985d13dd95df5eda6135 = L.circleMarker(
+            var circle_marker_b33a38b6d952536a918a7d2cdc3df82f = L.circleMarker(
                 [61.6418, 25.4745],
                 {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 3}
-            ).addTo(feature_group_220a8eefcc268ae8be769ea4590d19da);
+            ).addTo(feature_group_1f232bf52b7db9b9c13f0edd73b225c0);
         
     
-        var popup_5f67a3e05f151d7ef5134b00d653abc4 = L.popup({
+        var popup_dee1c4f8a1dabfa246bdbd634843e334 = L.popup({
   "maxWidth": 250,
 });
 
         
             
-                var html_0ceba46a1e68ae7b5889b206a9ac08af = $(`<div id="html_0ceba46a1e68ae7b5889b206a9ac08af" style="width: 100.0%; height: 100.0%;"><b>Pyhänpää (Päijänne south)</b><br>Access: mixed<br><small>Multiple painting groups on southern Päijänne shore. Paintings notably high above current water.</small></div>`)[0];
-                popup_5f67a3e05f151d7ef5134b00d653abc4.setContent(html_0ceba46a1e68ae7b5889b206a9ac08af);
+                var html_20c5020d1c0005e2acb463ae4a8dc1c2 = $(`<div id="html_20c5020d1c0005e2acb463ae4a8dc1c2" style="width: 100.0%; height: 100.0%;"><b>Pyhänpää (Päijänne south)</b><br>Access: mixed<br><small>Multiple painting groups on southern Päijänne shore. Paintings notably high above current water.</small></div>`)[0];
+                popup_dee1c4f8a1dabfa246bdbd634843e334.setContent(html_20c5020d1c0005e2acb463ae4a8dc1c2);
             
         
 
-        circle_marker_cb8de9926e40985d13dd95df5eda6135.bindPopup(popup_5f67a3e05f151d7ef5134b00d653abc4)
+        circle_marker_b33a38b6d952536a918a7d2cdc3df82f.bindPopup(popup_dee1c4f8a1dabfa246bdbd634843e334)
         ;
 
         
     
     
-            var circle_marker_d2e8be87efab4fc2a8f813a39f52343f = L.circleMarker(
+            var circle_marker_4ffe190936bb24764e5273f328c30ce9 = L.circleMarker(
                 [62.5701, 26.5492],
                 {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 3}
-            ).addTo(feature_group_220a8eefcc268ae8be769ea4590d19da);
+            ).addTo(feature_group_1f232bf52b7db9b9c13f0edd73b225c0);
         
     
-        var popup_88fea6a8bbf2e641531248416281c4c2 = L.popup({
+        var popup_290ffe036a05d21a6d3ffc91a6e7a96e = L.popup({
   "maxWidth": 250,
 });
 
         
             
-                var html_84719f3417027cb2b89518579b6a40b4 = $(`<div id="html_84719f3417027cb2b89518579b6a40b4" style="width: 100.0%; height: 100.0%;"><b>Uittovuori (Konnevesi)</b><br>Access: boat<br><small>On the water travel corridor between Keitele and Konnevesi — route site.</small></div>`)[0];
-                popup_88fea6a8bbf2e641531248416281c4c2.setContent(html_84719f3417027cb2b89518579b6a40b4);
+                var html_a8c0177e3c027c442ca98b23b5dae073 = $(`<div id="html_a8c0177e3c027c442ca98b23b5dae073" style="width: 100.0%; height: 100.0%;"><b>Uittovuori (Konnevesi)</b><br>Access: boat<br><small>On the water travel corridor between Keitele and Konnevesi — route site.</small></div>`)[0];
+                popup_290ffe036a05d21a6d3ffc91a6e7a96e.setContent(html_a8c0177e3c027c442ca98b23b5dae073);
             
         
 
-        circle_marker_d2e8be87efab4fc2a8f813a39f52343f.bindPopup(popup_88fea6a8bbf2e641531248416281c4c2)
+        circle_marker_4ffe190936bb24764e5273f328c30ce9.bindPopup(popup_290ffe036a05d21a6d3ffc91a6e7a96e)
         ;
 
         
     
     
-            var circle_marker_1d3662408fcf1aa24bc9f4d01f5a464d = L.circleMarker(
+            var circle_marker_59dad231b36f1a852e1e3ae96ec67994 = L.circleMarker(
                 [62.3786, 26.2411],
                 {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 3}
-            ).addTo(feature_group_220a8eefcc268ae8be769ea4590d19da);
+            ).addTo(feature_group_1f232bf52b7db9b9c13f0edd73b225c0);
         
     
-        var popup_9b5ec08a13869df2c8672f81a9102a28 = L.popup({
+        var popup_c0823e29b299288d8212e8551f9dbfe5 = L.popup({
   "maxWidth": 250,
 });
 
         
             
-                var html_5e22bf7338b1780ac9c952655a19021e = $(`<div id="html_5e22bf7338b1780ac9c952655a19021e" style="width: 100.0%; height: 100.0%;"><b>Paanalansaari (Hankavesi area)</b><br>Access: boat<br><small>Rock painting on Paanalansaari island. Approx coords from map search.</small></div>`)[0];
-                popup_9b5ec08a13869df2c8672f81a9102a28.setContent(html_5e22bf7338b1780ac9c952655a19021e);
+                var html_1e91b217198e0dc4ecda885a314956b5 = $(`<div id="html_1e91b217198e0dc4ecda885a314956b5" style="width: 100.0%; height: 100.0%;"><b>Paanalansaari (Hankavesi area)</b><br>Access: boat<br><small>Rock painting on Paanalansaari island. Approx coords from map search.</small></div>`)[0];
+                popup_c0823e29b299288d8212e8551f9dbfe5.setContent(html_1e91b217198e0dc4ecda885a314956b5);
             
         
 
-        circle_marker_1d3662408fcf1aa24bc9f4d01f5a464d.bindPopup(popup_9b5ec08a13869df2c8672f81a9102a28)
+        circle_marker_59dad231b36f1a852e1e3ae96ec67994.bindPopup(popup_c0823e29b299288d8212e8551f9dbfe5)
         ;
 
         
     
     
-            var circle_marker_052a6365818d226826d715b2d7a836d8 = L.circleMarker(
+            var circle_marker_bd6562a646e12f09aeb44ae6614317a2 = L.circleMarker(
                 [62.3699, 25.8124],
                 {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 3}
-            ).addTo(feature_group_220a8eefcc268ae8be769ea4590d19da);
+            ).addTo(feature_group_1f232bf52b7db9b9c13f0edd73b225c0);
         
     
-        var popup_7ca2a04fe1e64d3d5ba65beca63449f2 = L.popup({
+        var popup_3b5ad0f80ba8660b194dd759b9e9b04b = L.popup({
   "maxWidth": 250,
 });
 
         
             
-                var html_e9b83038270f49175c6eb6ee56d2e541 = $(`<div id="html_e9b83038270f49175c6eb6ee56d2e541" style="width: 100.0%; height: 100.0%;"><b>Halsvuori (Laukaa)</b><br>Access: mixed<br><small>Tourist attraction, rock painting.</small></div>`)[0];
-                popup_7ca2a04fe1e64d3d5ba65beca63449f2.setContent(html_e9b83038270f49175c6eb6ee56d2e541);
+                var html_d1a5ac32dbd42d3db62a9c0e55079892 = $(`<div id="html_d1a5ac32dbd42d3db62a9c0e55079892" style="width: 100.0%; height: 100.0%;"><b>Halsvuori (Laukaa)</b><br>Access: mixed<br><small>Tourist attraction, rock painting.</small></div>`)[0];
+                popup_3b5ad0f80ba8660b194dd759b9e9b04b.setContent(html_d1a5ac32dbd42d3db62a9c0e55079892);
             
         
 
-        circle_marker_052a6365818d226826d715b2d7a836d8.bindPopup(popup_7ca2a04fe1e64d3d5ba65beca63449f2)
+        circle_marker_bd6562a646e12f09aeb44ae6614317a2.bindPopup(popup_3b5ad0f80ba8660b194dd759b9e9b04b)
         ;
 
         
     
     
-            var circle_marker_3352d41d52ea427bc7d1db7ca1cd2265 = L.circleMarker(
+            var circle_marker_290bc63195a61a5cb619edb9a0c3b879 = L.circleMarker(
                 [62.5411, 26.6699],
                 {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 3}
-            ).addTo(feature_group_220a8eefcc268ae8be769ea4590d19da);
+            ).addTo(feature_group_1f232bf52b7db9b9c13f0edd73b225c0);
         
     
-        var popup_a73e8e56e93713c4949ff7799b68644f = L.popup({
+        var popup_dea764cf4ce7a923ec088a16704975ea = L.popup({
   "maxWidth": 250,
 });
 
         
             
-                var html_08884cd9701c57f43f0f656f63a5e758 = $(`<div id="html_08884cd9701c57f43f0f656f63a5e758" style="width: 100.0%; height: 100.0%;"><b>Kumpusaari (Konnevesi)</b><br>Access: boat<br><small>Island site near Uittovuori on Konnevesi water route.</small></div>`)[0];
-                popup_a73e8e56e93713c4949ff7799b68644f.setContent(html_08884cd9701c57f43f0f656f63a5e758);
+                var html_bc12a3aa9185f26a9b99f5e76b76d920 = $(`<div id="html_bc12a3aa9185f26a9b99f5e76b76d920" style="width: 100.0%; height: 100.0%;"><b>Kumpusaari (Konnevesi)</b><br>Access: boat<br><small>Island site near Uittovuori on Konnevesi water route.</small></div>`)[0];
+                popup_dea764cf4ce7a923ec088a16704975ea.setContent(html_bc12a3aa9185f26a9b99f5e76b76d920);
             
         
 
-        circle_marker_3352d41d52ea427bc7d1db7ca1cd2265.bindPopup(popup_a73e8e56e93713c4949ff7799b68644f)
+        circle_marker_290bc63195a61a5cb619edb9a0c3b879.bindPopup(popup_dea764cf4ce7a923ec088a16704975ea)
         ;
 
         
     
     
-            var circle_marker_b9f1a80b22656233b7f3275be0582aa5 = L.circleMarker(
+            var circle_marker_3463b03b8cac5fe0d8a2ee931e948edc = L.circleMarker(
                 [61.9882, 25.7516],
                 {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 10, "stroke": true, "weight": 3}
-            ).addTo(feature_group_220a8eefcc268ae8be769ea4590d19da);
+            ).addTo(feature_group_1f232bf52b7db9b9c13f0edd73b225c0);
         
     
-        var popup_78e7cb7d415c19af9d0f22f580f92267 = L.popup({
+        var popup_daf73b79cedbb6b906f7255027834167 = L.popup({
   "maxWidth": 250,
 });
 
         
             
-                var html_b336f9356688f1f350486b224645379e = $(`<div id="html_b336f9356688f1f350486b224645379e" style="width: 100.0%; height: 100.0%;"><b>Hakavuori</b><br>Access: mixed<br><small>Rock painting site.</small></div>`)[0];
-                popup_78e7cb7d415c19af9d0f22f580f92267.setContent(html_b336f9356688f1f350486b224645379e);
+                var html_4bea35eb8f86f56d66a2db6822a631c1 = $(`<div id="html_4bea35eb8f86f56d66a2db6822a631c1" style="width: 100.0%; height: 100.0%;"><b>Hakavuori</b><br>Access: mixed<br><small>Rock painting site.</small></div>`)[0];
+                popup_daf73b79cedbb6b906f7255027834167.setContent(html_4bea35eb8f86f56d66a2db6822a631c1);
             
         
 
-        circle_marker_b9f1a80b22656233b7f3275be0582aa5.bindPopup(popup_78e7cb7d415c19af9d0f22f580f92267)
+        circle_marker_3463b03b8cac5fe0d8a2ee931e948edc.bindPopup(popup_daf73b79cedbb6b906f7255027834167)
         ;
 
         
     
     
-            feature_group_220a8eefcc268ae8be769ea4590d19da.addTo(map_323185ebdbaf21aac2a8281386714e93);
+            feature_group_1f232bf52b7db9b9c13f0edd73b225c0.addTo(map_f47c4a40030001a423c562c44fb08954);
         
     
-            var layer_control_6112741cd7e36dbad3c4a0a1011db757_layers = {
+            var layer_control_d8ceaa674214ba0abf0696a734a705dd_layers = {
                 base_layers : {
-                    "openstreetmap" : tile_layer_4e6a0cfebffc82fc24adf3e8aa1cf94d,
-                    "Satellite" : tile_layer_f3b107659e8d62314c6953a20032532a,
+                    "openstreetmap" : tile_layer_d4bf9d81ec97d3675bf1f706eca84ad0,
+                    "Satellite" : tile_layer_aa6adc4c5fdc52001eb6f760121b2443,
                 },
                 overlays :  {
-                    "Likelihood heatmap" : heat_map_6c0af2b041980b9834a90380b4dc70d2,
-                    "Top 30 candidates" : feature_group_b0987627b200f3447d3fb5f9725c38a8,
-                    "Known rock art sites (red)" : feature_group_220a8eefcc268ae8be769ea4590d19da,
+                    "Likelihood heatmap" : heat_map_931d08dd596451ec59c09ea638bc02d1,
+                    "Top 30 candidates" : feature_group_a56c8acade035f07b582245aa5df7f0b,
+                    "Known rock art sites (red)" : feature_group_1f232bf52b7db9b9c13f0edd73b225c0,
                 },
             };
-            let layer_control_6112741cd7e36dbad3c4a0a1011db757 = L.control.layers(
-                layer_control_6112741cd7e36dbad3c4a0a1011db757_layers.base_layers,
-                layer_control_6112741cd7e36dbad3c4a0a1011db757_layers.overlays,
+            let layer_control_d8ceaa674214ba0abf0696a734a705dd = L.control.layers(
+                layer_control_d8ceaa674214ba0abf0696a734a705dd_layers.base_layers,
+                layer_control_d8ceaa674214ba0abf0696a734a705dd_layers.overlays,
                 {
   "position": "topright",
   "collapsed": true,
   "autoZIndex": true,
 }
-            ).addTo(map_323185ebdbaf21aac2a8281386714e93);
+            ).addTo(map_f47c4a40030001a423c562c44fb08954);
 
         
 </script>
