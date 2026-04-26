@@ -43,9 +43,9 @@ GRID_STEP = 0.004          # ~300 m grid spacing
 # Actual site elevations (asl): Saraakallio 83m, Toussunlinna 79m, Pyhänpää 101m, Uittovuori 116m
 # Lake surface elevations in region: Päijänne ~77m, Saraavesi ~82m, Konnevesi ~95m, Keitele ~99m
 # → sites sit roughly 2–20m above their lake surface
-ELEV_ABOVE_LAKE_MIN = 1    # metres above local lake surface
+ELEV_ABOVE_LAKE_MIN = 0    # metres above local lake surface (Toussunlinna is ~0m)
 ELEV_ABOVE_LAKE_MAX = 25   # metres above local lake surface (Pyhänpää ~24m above Päijänne)
-ELEV_ABOVE_LAKE_PEAK = 8   # sweet spot — most sites here
+ELEV_ABOVE_LAKE_PEAK = 5   # sweet spot adjusted — several sites cluster 2–8m above water
 
 # Approximate lake surface elevations (asl) for scoring
 LAKE_SURFACES = [
@@ -425,6 +425,29 @@ def score_grid(grid, known_sites, elevations, slopes=None, aspects=None):
         np.where(min_corr < 8.0, WATER_ROUTE_BONUS * (1 - (min_corr - 3.0) / 5.0), 0.0)
     )
 
+    # ── Portage corridor score ────────────────────────────────────────────────
+    # Points close to TWO different lake systems score high — likely on a land
+    # carry route between water bodies (Halsvuori pattern).
+    # For each grid point: find distance to each lake, take two closest *different*
+    # lake systems (by name), score by sum of closeness.
+    PORTAGE_MAX_KM = 8.0   # must be within this of each lake to count
+    lake_dists_km = np.stack([
+        vec_haversine(ll, lo, lats, lons)
+        for ll, lo in zip(lake_lats, lake_lons)
+    ], axis=1)   # shape (N, n_lakes)
+    # Sort distances per point, take closest and 2nd closest lake distances
+    sorted_dists = np.sort(lake_dists_km, axis=1)
+    d1 = sorted_dists[:, 0]   # closest lake
+    d2 = sorted_dists[:, 1]   # 2nd closest (different lake)
+    portage_score = np.where(
+        (d1 < PORTAGE_MAX_KM) & (d2 < PORTAGE_MAX_KM),
+        (1.0 - d1 / PORTAGE_MAX_KM) * (1.0 - d2 / PORTAGE_MAX_KM),
+        0.0
+    )
+    # Suppress portage bonus when point is also right on a single lake shore
+    # (those are already rewarded by water route score)
+    portage_score = np.where(d1 < 1.5, portage_score * 0.3, portage_score)
+
     # ── Cliff aspect + steepness ──────────────────────────────────────────────
     if slopes is not None and aspects is not None:
         slopes_arr = np.array([s if s == s else 0.0 for s in slopes])
@@ -439,8 +462,10 @@ def score_grid(grid, known_sites, elevations, slopes=None, aspects=None):
 
     # ── Combine ───────────────────────────────────────────────────────────────
     # Cliff score is additive (SRTM 30m resolution too coarse to gate on)
+    # Portage corridor replaces part of approach weight — captures land-route sites
     total = np.clip(
-        0.40*e_score + 0.20*c_score + 0.25*p_score + 0.10*a_score + 0.05*(1 + w_score),
+        0.40*e_score + 0.20*c_score + 0.25*p_score + 0.07*a_score
+        + 0.05*(1 + w_score) + 0.08*portage_score,
         0, 1
     )
 
@@ -456,6 +481,7 @@ def score_grid(grid, known_sites, elevations, slopes=None, aspects=None):
             "prox_score": round(float(p_score[i]), 3),
             "approach_score": round(float(a_score[i]), 3),
             "route_bonus": round(float(w_score[i]), 3),
+            "portage_score": round(float(portage_score[i]), 3),
             "score": round(float(total[i]), 3),
         })
     return results
@@ -501,7 +527,8 @@ def build_map(scored, known_sites):
                 f"{'🟢 High' if r['score']>=0.7 else '🟡 Medium' if r['score']>=0.45 else '🔴 Low'}<br><br>"
                 f"Elevation: {elev_str}<br>"
                 f"Elev score: {r['elev_score']:.2f} · Cliff: {r.get('cliff_score',0):.2f}<br>"
-                f"Proximity: {r['prox_score']:.2f} · Approach: {r.get('approach_score',0):.2f}<br><br>"
+                f"Proximity: {r['prox_score']:.2f} · Approach: {r.get('approach_score',0):.2f}<br>"
+                f"Portage corridor: {r.get('portage_score',0):.2f}<br><br>"
                 f"<a href='https://www.google.com/maps?q={r['lat']:.5f},{r['lon']:.5f}' "
                 f"target='_blank'>📍 Open in Google Maps</a>",
                 max_width=220,
