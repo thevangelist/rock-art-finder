@@ -105,10 +105,10 @@ MANUAL_KNOWN_SITES = [
         "elev_above_water": 10,
     },
     {
-        "name": "Halsvuori (Laukaa)",
+        "name": "Halsvuori (Jyväskylä)",
         "lon": 25.8124, "lat": 62.3699,
-        "access": "mixed",
-        "note": "Tourist attraction, rock painting.",
+        "access": "land",
+        "note": "Base of a ~500m long, ~20m high cliff face opening SW toward a now-overgrown pond (once drained to Hiidenjärvi and Iso-Kuukkanen). 5km from Leppävesi. NOT a boat-access site — proposed to be on a land portage route across the isthmus. Small 1m-wide painting panel: two human figures (35cm and 31cm tall) carrying objects in their hands, interpreted as prey animals (fox, beaver or squirrel). Damaged by campfire soot and climbing bolts nearby. Found 1979.",
         "elev_above_water": 5,
     },
     {
