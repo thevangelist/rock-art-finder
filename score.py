@@ -690,68 +690,55 @@ def build_map(scored, known_sites):
       document.getElementById('panel').classList.add('open');
     }
 
-    function updatePosition(pos) {
-      var lat = pos.coords.latitude, lon = pos.coords.longitude;
-      var acc = pos.coords.accuracy;
-      _lastLat = lat; _lastLon = lon;
+    // Use Leaflet's built-in locate which handles permissions and rendering reliably
+    _map.on('locationfound', function(e) {
+      _lastLat = e.latlng.lat; _lastLon = e.latlng.lng;
 
-      // Update or create user dot
       if (_userMarker) {
-        _userMarker.setLatLng([lat, lon]);
-        _accuracyCircle.setLatLng([lat, lon]).setRadius(acc);
+        _userMarker.setLatLng(e.latlng);
+        _accuracyCircle.setLatLng(e.latlng).setRadius(e.accuracy);
       } else {
-        _userMarker = L.marker([lat, lon], {
-          icon: L.divIcon({
-            html: '<div style="background:#2196F3;width:16px;height:16px;border-radius:50%;border:3px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.5)"></div>',
-            iconSize:[16,16], iconAnchor:[8,8]
-          }),
-          zIndexOffset: 1000
+        _accuracyCircle = L.circle(e.latlng, {
+          radius: e.accuracy, color: '#2196F3', fillColor: '#2196F3',
+          fillOpacity: 0.1, weight: 1
         }).addTo(_map);
-        _accuracyCircle = L.circle([lat, lon], {radius: acc, color:'#2196F3', fillOpacity:0.08, weight:1}).addTo(_map);
-        _map.setView([lat, lon], 14);
+        _userMarker = L.circleMarker(e.latlng, {
+          radius: 8, color: 'white', weight: 3,
+          fillColor: '#2196F3', fillOpacity: 1
+        }).addTo(_map);
+        _map.setView(e.latlng, 14);
       }
-      if (_following) _map.panTo([lat, lon]);
+      if (_following) _map.panTo(e.latlng);
 
-      // Update panel if open
       if (document.getElementById('panel').classList.contains('open')) {
-        renderNearest(lat, lon);
+        renderNearest(e.latlng.lat, e.latlng.lng);
       }
-    }
+    });
 
-    function gpsError() {
-      var btn = document.getElementById('gps-btn');
-      if (btn) btn.innerHTML = '📍 GPS unavailable';
+    _map.on('locationerror', function(e) {
+      alert('Location error: ' + e.message);
       stopTracking();
-    }
+    });
 
     function stopTracking() {
-      if (_watchId !== null) { navigator.geolocation.clearWatch(_watchId); _watchId = null; }
-      _tracking = false;
-      var btn = document.getElementById('gps-btn');
-      if (btn) btn.style.background = '#2196F3';
+      _map.stopLocate();
+      _tracking = false; _following = false;
+      document.getElementById('gps-btn').style.background = '#2196F3';
     }
 
     function toggleTracking() {
-      if (!navigator.geolocation) { alert('GPS not available in this browser'); return; }
       if (!_tracking) {
-        // First press: start tracking + follow
-        _tracking = true;
-        _following = true;
+        _tracking = true; _following = true;
         document.getElementById('gps-btn').style.background = '#4CAF50';
-        _watchId = navigator.geolocation.watchPosition(updatePosition, gpsError, {
-          enableHighAccuracy: true, maximumAge: 3000, timeout: 15000
-        });
+        _map.locate({watch: true, enableHighAccuracy: true, maxZoom: 16});
       } else if (_following) {
-        // Second press: keep tracking but stop following (user dragged away)
         _following = false;
         document.getElementById('gps-btn').style.background = '#FF9800';
       } else {
-        // Third press: stop everything
         stopTracking();
       }
     }
 
-    // Stop following when user manually drags the map
     _map.on('dragstart', function() {
       if (_tracking && _following) {
         _following = false;
